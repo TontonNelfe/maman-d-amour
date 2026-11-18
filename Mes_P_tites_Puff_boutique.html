@@ -58,9 +58,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL='https://odexadvmnxjpwbqtbjsc.supabase.co';
-const SUPABASE_ANON_KEY = "sb_publishable_Trzd_aKbHzzh6mRaz1GIGg_lFRsu5M5u";
-const client=window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+const SUPABASE_URL = 'https://odexadvmnxjpwbqtbjsc.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_Trzd_aKbHzzh6mRaz1GIGg_lFRsu5M5u';
+const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let products=[],cart=[],reviewPayload=null;
 const $=id=>document.getElementById(id);
 const money=n=>(Number(n)||0).toLocaleString('fr-BE',{style:'currency',currency:'EUR'});
