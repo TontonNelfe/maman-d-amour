@@ -324,7 +324,18 @@ function renderShop(){
       const options = Object.entries(labels).map(([value, label]) =>
         `<option value="${value}" ${o.status === value ? 'selected' : ''}>${label}</option>`
       ).join('');
+      
+const paymentButton = currentRole === 'direction'
+  ? o.paid_at
+    ? `<span class="pill">Payée · ${esc(o.payment_method || '')}</span>`
+    : `<button type="button"
+         style="margin-top:7px"
+         onclick="markShopOrderPaid('${o.id}')">
+         💶 Marquer comme payée
+       </button>`
+  : '';
 
+  
       const deleteButton = currentRole === 'direction'
         ? `<button type="button" class="danger"
              style="margin-top:7px"
