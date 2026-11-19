@@ -352,11 +352,13 @@ const paymentButton = currentRole === 'direction'
   : '';
 
   
-      const deleteButton = currentRole === 'direction'
-        ? `<button type="button" class="danger"
-             style="margin-top:7px"
-             onclick="deleteShopOrder('${o.id}')">🗑 Supprimer</button>`
-        : '';
+const deleteButton = currentRole === 'direction'
+  ? `<button type="button" class="danger"
+       style="margin-top:7px"
+       onclick="deleteShopOrder('${o.id}')">
+       🗑 Supprimer la commande
+     </button>`
+  : '';
 
       return `
         <tr>
