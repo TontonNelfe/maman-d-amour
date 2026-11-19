@@ -447,15 +447,17 @@ $('productOverlay').addEventListener('click', e => {
 });
 
 $('products').addEventListener('click', e => {
-  if (e.target.closest('button, select, input, label')) return;
-
   const card = e.target.closest('.product');
   if (!card) return;
 
-  const index = Array.from($('products').children).indexOf(card);
-  const p = products[index];
+  if (e.target.closest('button, select, input, label')) return;
 
-  if (p) openProduct(p.id);
+  const name = card.querySelector('h3')?.textContent;
+  const p = products.find(product => product.name === name);
+
+  if (p) {
+    openProduct(p.id);
+  }
 });
 function addToCart(productId){
   const p=products.find(x=>x.id===productId),variantId=$('size-'+productId)?.value;
