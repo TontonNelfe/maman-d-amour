@@ -486,7 +486,9 @@ const save=()=>{
   render();
   queueRemoteSave();
 };
-const el=id=>document.getElementById(id);
+function el(id){
+  return document.getElementById(id);
+}
 const product=id=>db.products.find(p=>p.id===id);
 
 function switchTab(id){
