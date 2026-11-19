@@ -479,7 +479,16 @@ function showStep(step){['cart','checkout','review','success'].forEach(s=>$(s+'S
 $('openCart').onclick=()=>{$('cartOverlay').classList.add('show');showStep('cart')};
 $('closeCart').onclick=()=>$('cartOverlay').classList.remove('show');
 $('cartOverlay').addEventListener('click',e=>{if(e.target===$('cartOverlay'))$('cartOverlay').classList.remove('show')});
-$('checkoutBtn').onclick=()=>{if(!cart.length)return;showStep('checkout')};
+$('checkoutBtn').onclick=()=>{
+  if(!cart.length)return;
+
+  if(!currentUser){
+    $('accountOverlay').classList.add('show');
+    return;
+  }
+
+  showStep('checkout');
+};
 $('backToCart').onclick=()=>showStep('cart');
 document.querySelectorAll('input[name="delivery"]').forEach(r=>r.addEventListener('change',()=>{const delivery=document.querySelector('input[name="delivery"]:checked').value==='delivery';$('addressField').classList.toggle('hidden',!delivery);$('customerAddress').required=delivery}));
 $('orderForm').addEventListener('submit',e=>{
