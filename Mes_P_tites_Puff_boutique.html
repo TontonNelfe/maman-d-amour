@@ -98,6 +98,106 @@ button{cursor:pointer;border:0}
   #accountOverlay .modalbody{padding:14px}
   #accountOverlay #accountLogin,#accountOverlay #accountConnected{padding:15px}
 }
+  
+/* ===== FICHE PRODUIT AGRANDIE ===== */
+#productOverlay{
+  align-items:center;
+  z-index:50;
+  padding:20px;
+}
+#productOverlay .product-modal{
+  width:min(850px,100%);
+  max-height:92vh;
+  overflow:auto;
+  background:#fff;
+  border-radius:24px;
+  box-shadow:0 25px 80px #14051e66;
+  position:relative;
+}
+.product-modal-head{
+  display:flex;
+  justify-content:flex-end;
+  padding:14px 16px 0;
+}
+.product-modal-content{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:25px;
+  padding:10px 25px 28px;
+}
+.product-modal-photo{
+  width:100%;
+  min-height:330px;
+  max-height:480px;
+  border-radius:18px;
+  overflow:hidden;
+  background:#f7f3ff;
+  display:grid;
+  place-items:center;
+}
+.product-modal-photo img{
+  width:100%;
+  height:100%;
+  max-height:480px;
+  object-fit:contain;
+}
+.product-modal-info{
+  padding:12px 0;
+}
+.product-modal-info h2{
+  font-size:29px;
+  margin:0 0 12px;
+  line-height:1.2;
+}
+.product-modal-info .price{
+  font-size:27px;
+  margin:15px 0;
+}
+.product-modal-info .desc{
+  min-height:0;
+  font-size:14px;
+  line-height:1.7;
+}
+.product-modal-info .selectors{
+  grid-template-columns:1fr;
+}
+.product-modal-info .addbtn{
+  padding:14px;
+  font-size:15px;
+  margin-top:12px;
+}
+.product-modal-close{
+  background:#f2edf8;
+  color:#4c1d95;
+  border-radius:12px;
+  width:40px;
+  height:40px;
+  font-size:21px;
+}
+.product{
+  cursor:pointer;
+}
+.product .field,
+.product .addbtn{
+  cursor:default;
+}
+@media(max-width:600px){
+  #productOverlay{padding:10px}
+  .product-modal-content{
+    grid-template-columns:1fr;
+    gap:12px;
+    padding:8px 17px 22px;
+  }
+  .product-modal-photo{
+    min-height:230px;
+    max-height:300px;
+  }
+  .product-modal-photo img{
+    max-height:300px;
+  }
+  .product-modal-info h2{font-size:24px}
+}
+
 </style>
 </head>
 <body>
