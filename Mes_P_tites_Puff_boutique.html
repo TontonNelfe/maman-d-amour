@@ -245,6 +245,35 @@ button{cursor:pointer;border:0}
   </div>
 </div>
 
+  
+<div class="overlay" id="productOverlay">
+  <div class="product-modal">
+    <div class="product-modal-head">
+      <button class="product-modal-close" id="closeProduct">✕</button>
+    </div>
+    <div class="product-modal-content">
+      <div class="product-modal-photo" id="modalProductPhoto"></div>
+      <div class="product-modal-info">
+        <h2 id="modalProductName"></h2>
+        <p class="desc" id="modalProductDescription"></p>
+        <div class="price" id="modalProductPrice"></div>
+        <div class="stockhint" id="modalProductStock"></div>
+        <div class="selectors">
+          <div class="field">
+            <label>Goût</label>
+            <select id="modalColor"></select>
+          </div>
+          <div class="field">
+            <label>Style</label>
+            <select id="modalSize"></select>
+          </div>
+        </div>
+        <button class="addbtn" id="modalAddToCart">Ajouter au panier</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="overlay" id="cartOverlay"><div class="drawer">
 <div class="drawerhead"><h2 id="drawerTitle">Ton panier</h2><button class="close" id="closeCart" aria-label="Fermer">×</button></div>
 <div id="cartStep">
