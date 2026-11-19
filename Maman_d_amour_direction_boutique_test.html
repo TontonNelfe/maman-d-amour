@@ -181,22 +181,53 @@ function addShopVariantRow(color='',size='M',stock=0){
     <td><button type="button" class="danger" onclick="this.closest('tr').remove()">Retirer</button></td>`;
   el('shopVariantRows').appendChild(tr);
 }
+
 async function loadShopData(){
-  if(!currentUser||!currentRole)return;
-  el('shopProductRows').innerHTML='<tr><td colspan="5" class="empty">Chargement…</td></tr>';
-  const [p,v,o]=await Promise.all([
-    supabaseClient.from('shop_products').select('*').order('display_order').order('created_at',{ascending:false}),
-    supabaseClient.from('shop_variants').select('*').order('color').order('size'),
-    supabaseClient.from('shop_orders').select('*').order('created_at',{ascending:false}).limit(100)
-  ]);
-  if(p.error||v.error||o.error){
-    const err=p.error||v.error||o.error;
-    el('shopProductRows').innerHTML=`<tr><td colspan="5" class="empty">Erreur de chargement : ${esc(err.message)}</td></tr>`;
-    return;
+  const productRows = el('shopProductRows');
+  const orderRows = el('shopOrderRows');
+
+  if(productRows) productRows.innerHTML =
+    '<tr><td colspan="5" class="empty">Chargement…</td></tr>';
+
+  if(orderRows) orderRows.innerHTML =
+    '<tr><td colspan="6" class="empty">Chargement…</td></tr>';
+
+  try {
+    if(!currentUser || !currentRole){
+      throw new Error('Connexion ou rôle non chargé. Déconnecte-toi puis reconnecte-toi.');
+    }
+
+    const [p,v,o] = await Promise.all([
+      supabaseClient.from('shop_products').select('*')
+        .order('display_order').order('created_at',{ascending:false}),
+      supabaseClient.from('shop_variants').select('*')
+        .order('color').order('size'),
+      supabaseClient.from('shop_orders').select('*')
+        .order('created_at',{ascending:false}).limit(100)
+    ]);
+
+    if(p.error) throw p.error;
+    if(v.error) throw v.error;
+    if(o.error) throw o.error;
+
+    shopProducts = p.data || [];
+    shopVariants = v.data || [];
+    shopOrders = o.data || [];
+
+    renderShop();
+
+  } catch(err) {
+    console.error('Erreur loadShopData:', err);
+    const message = 'Erreur : ' + esc(err.message || String(err));
+
+    if(productRows) productRows.innerHTML =
+      `<tr><td colspan="5" class="empty">${message}</td></tr>`;
+
+    if(orderRows) orderRows.innerHTML =
+      `<tr><td colspan="6" class="empty">${message}</td></tr>`;
   }
-  shopProducts=p.data||[];shopVariants=v.data||[];shopOrders=o.data||[];
-  renderShop();
 }
+
 
 async function deleteShopOrder(id){
   if(currentRole!=='direction'){
