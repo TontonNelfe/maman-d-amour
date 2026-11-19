@@ -224,6 +224,147 @@ function resetShopForm(){
   el('shopFormTitle').textContent='Ajouter un article';el('shopSaveBtn').textContent="Enregistrer l'article";
   el('shopCancelBtn').classList.add('hidden');el('shopFormStatus').textContent='';
 }
+    // Empêche plusieurs traitements simultanés de la même commande
+const processingShopOrders=new Set();
+
+async function deleteShopOrder(id){
+  const order=shopOrders.find(o=>o.id===id);
+  if(!order)return;
+
+  if(!confirm(
+    `Supprimer définitivement la commande de ${order.customer_name||'ce client'} ?\n\n`+
+    `Seule la commande sera supprimée. Le compte client, les articles et la comptabilité ne seront pas touchés.`
+  ))return;
+
+  const {error}=await supabaseClient
+    .from('shop_orders')
+    .delete()
+    .eq('id',id);
+
+  if(error){
+    alert('Suppression impossible : '+error.message);
+    return;
+  }
+
+  await loadShopData();
+}
+
+async function finishShopOrder(id){
+  if(processingShopOrders.has(id))return;
+
+  const order=shopOrders.find(o=>o.id===id);
+  if(!order)return;
+
+  if(order.status==='refused'){
+    alert('Cette commande a été refusée.');
+    return;
+  }
+
+  if(db.sales.some(s=>s.shopOrderId===id)){
+    alert('Cette commande a déjà été comptabilisée.');
+    await loadShopData();
+    return;
+  }
+
+  const method=prompt(
+    'Mode de paiement :\nEspèces, Carte, Virement ou Autre',
+    'Espèces'
+  );
+
+  if(method===null)return;
+
+  const allowed=['Espèces','Carte','Virement','Autre'];
+  const paymentMethod=allowed.find(
+    x=>x.toLowerCase()===method.trim().toLowerCase()
+  );
+
+  if(!paymentMethod){
+    alert('Mode de paiement invalide.');
+    return;
+  }
+
+  if(!confirm(
+    `Terminer la commande de ${order.customer_name||'ce client'} ?\n`+
+    `Montant : ${money(order.total)}\n`+
+    `Une vente encaissée sera créée dans la comptabilité.`
+  ))return;
+
+  processingShopOrders.add(id);
+
+  try{
+    const items=Array.isArray(order.items)?order.items:[];
+    const quantity=items.reduce(
+      (sum,item)=>sum+(Number(item.quantity)||0),0
+    );
+
+    const cost=items.reduce((sum,item)=>{
+      const variant=shopVariants.find(v=>v.id===item.variant_id);
+      const product=variant&&shopProducts.find(
+        p=>p.id===variant.product_id
+      );
+      return sum+
+        (Number(product?.purchase_cost)||0)*
+        (Number(item.quantity)||0);
+    },0);
+
+    const names=items.map(item=>{
+      const variant=shopVariants.find(v=>v.id===item.variant_id);
+      const product=variant&&shopProducts.find(
+        p=>p.id===variant.product_id
+      );
+      return `${product?.name||'Article'} × ${Number(item.quantity)||0}`;
+    }).join(', ');
+
+    // Mettre la commande au statut Livrée dans Supabase
+    const {error}=await supabaseClient.rpc(
+      'mda_update_shop_order_status',
+      {p_order_id:id,p_status:'delivered'}
+    );
+
+    if(error)throw error;
+
+    // Dernière vérification avant création de la vente
+    if(db.sales.some(s=>s.shopOrderId===id)){
+      await loadShopData();
+      return;
+    }
+
+    const sale={
+      id:crypto.randomUUID(),
+      shopOrderId:id,
+      date:date(),
+      productId:'shop-order-'+id,
+      name:'Commande boutique : '+(names||'Articles'),
+      qty:quantity,
+      price:quantity?Number(order.total)/quantity:Number(order.total),
+      total:Number(order.total)||0,
+      paid:true,
+      method:paymentMethod,
+      client:order.customer_name||'Client boutique',
+      note:'Commande boutique Mes P’tites Puff',
+      cost
+    };
+
+    db.sales.push(sale);
+    db.moves.push({
+      date:sale.date,
+      type:'Vente boutique',
+      detail:sale.name+' · '+sale.client,
+      amount:sale.total
+    });
+
+    save();
+    await loadShopData();
+
+    alert('Commande terminée et vente ajoutée à la comptabilité !');
+
+  }catch(error){
+    alert('Impossible de terminer la commande : '+error.message);
+    await loadShopData();
+  }finally{
+    processingShopOrders.delete(id);
+  }
+}
 async function editShopProduct(id){
   const p=shopProducts.find(x=>x.id===id);if(!p)return;
   editingShopProductId=id;el('spName').value=p.name;el('spPrice').value=p.price;el('spCost').value=p.purchase_cost;
