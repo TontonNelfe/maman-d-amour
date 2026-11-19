@@ -485,7 +485,16 @@ document.querySelectorAll('input[name="delivery"]').forEach(r=>r.addEventListene
 $('orderForm').addEventListener('submit',e=>{
   e.preventDefault();
   const delivery=document.querySelector('input[name="delivery"]:checked').value,isDelivery=delivery==='delivery';
-  const payload={customer_name:$('customerName').value.trim(),phone:$('customerPhone').value.trim(),delivery_mode:delivery,address:isDelivery?$('customerAddress').value.trim():null,note:$('customerNote').value.trim(),items:cart.map(x=>({variant_id:x.variant_id,quantity:x.quantity}))};
+  const payload={customer_name:$('customerName').value.trim(),phone:$('customerPhone').value.trim(),delivery_mode:delivery,address:isDelivery?$('customerAddress').value.trim():null,note:$('customerNote').value.trim(),
+items:cart.map(x=>({
+  variant_id:x.variant_id,
+  name:x.name,
+  color:x.color,
+  size:x.size,
+  price:x.price,
+  quantity:x.quantity
+}))
+))};
   if(payload.customer_name.length<2||payload.phone.length<6||(isDelivery&&payload.address.length<8)){alert('Vérifie ton nom, ton téléphone et ton adresse de livraison.');return}
   reviewPayload=payload;
   const total=cart.reduce((a,x)=>a+x.price*x.quantity,0);
