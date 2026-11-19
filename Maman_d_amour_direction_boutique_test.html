@@ -80,52 +80,7 @@
 </section>
 
 
-<section id="shop">
-  <div class="panel">
-    <h2>🛍 Boutique publique — Mes P'tites Puff</h2>
-    <p class="muted">Ajoute ici les articles visibles dans la boutique publique. Les produits et stocks sont partagés avec la boutique en ligne.</p>
-    <div class="row" style="margin-bottom:12px">
-      <span class="pill" id="shopProductCount">0 article</span>
-      <span class="pill" id="shopOrderCount">0 commande</span>
-      <button type="button" class="secondary" onclick="loadShopData()">Actualiser la boutique</button>
-    </div>
-    <form id="shopProductForm">
-      <h3 id="shopFormTitle">Ajouter un article</h3>
-      <div class="row">
-        <div class="field"><label>Nom de l'article</label><input id="spName" required maxlength="100" placeholder="Nom du produit"></div>
-        <div class="field"><label>Prix de vente (€)</label><input id="spPrice" type="number" min="0" step="0.01" required></div>
-        <div class="field"><label>Coût d'achat (€) — privé</label><input id="spCost" type="number" min="0" step="0.01" value="0"></div>
-      </div>
-      <div class="row" style="margin-top:10px">
-        <div class="field" style="flex-basis:100%"><label>Description publique</label><input id="spDescription" maxlength="500" placeholder="Description affichée dans la boutique"></div>
-        <div class="field"><label>Photo du produit</label><input id="spPhoto" type="file" accept="image/*"></div>
-        <div class="field"><label>Ou URL de la photo</label><input id="spPhotoUrl" type="url" placeholder="https://..."></div>
-      </div>
-      <div class="row" style="margin:12px 0">
-        <label style="display:flex;align-items:center;gap:8px;color:var(--muted)"><input id="spActive" type="checkbox" checked style="width:auto"> Publier cet article dans la boutique</label>
-      </div>
-      <div class="panel" style="background:#160f1d;margin:12px 0">
-        <h3 style="margin-top:0">Goûts, styles et stocks</h3>
-        <p class="note">Ajoute une ligne par combinaison goût/style. Exemple : Fraise / Classique / 5.</p>
-        <div class="tablewrap"><table><thead><tr><th>Goût</th><th>Style</th><th>Quantité</th><th></th></tr></thead><tbody id="shopVariantRows"></tbody></table></div>
-        <datalist id="shopSizeOptions"><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option></datalist>
-        <button type="button" class="secondary" onclick="addShopVariantRow()">＋ Ajouter une combinaison</button>
-      </div>
-      <div class="row"><button type="submit" id="shopSaveBtn">Enregistrer l'article</button><button type="button" class="secondary hidden" id="shopCancelBtn" onclick="resetShopForm()">Annuler</button></div>
-      <div class="note" id="shopFormStatus" role="status"></div>
-    </form>
-  </div>
-  <div class="panel">
-    <h2>Articles de la boutique</h2>
-    <div class="tablewrap"><table><thead><tr><th>Article</th><th>Prix</th><th>Variantes / stock</th><th>Visibilité</th><th>Actions</th></tr></thead><tbody id="shopProductRows"><tr><td colspan="5" class="empty">Chargement…</td></tr></tbody></table></div>
-  </div>
-  <div class="panel">
-    <h2>Commandes clients</h2>
-    <p class="note">Le stock est déduit automatiquement lors du passage à « Acceptée », une seule fois par commande.</p>
-    <div class="tablewrap"><table><thead><tr><th>Date</th><th>Client</th><th>Commande</th><th>Total</th><th>Statut</th><th>Action</th></tr></thead><tbody id="shopOrderRows"><tr><td colspan="6" class="empty">Chargement…</td></tr></tbody></table></div>
-    <div class="note" id="shopOrderStatus" role="status"></div>
-  </div>
-</section>
+
 
 <section id="members"><div class="panel"><h2>Gestion des employés</h2><p class="muted">Valide les comptes en attente ou suspends un accès. Seule la direction peut effectuer ces actions.</p><div class="tablewrap"><table><thead><tr><th>E-mail</th><th>Rôle</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="memberRows"><tr><td colspan="4" class="empty">Chargement…</td></tr></tbody></table></div><button class="secondary" id="refreshMembers" type="button" style="margin-top:12px">Actualiser la liste</button><div id="memberStatus" class="note" role="status"></div></div></section>
 </main></div><div class="foot">Données synchronisées en ligne · Les changements sont partagés avec les autres appareils connectés.</div></div>
