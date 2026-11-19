@@ -26,7 +26,48 @@
 <section id="catalogue"><div class="sectionhead"><div><h2>La collection</h2><p>Les articles disponibles en ce moment</p></div></div><div class="grid" id="products"><div class="empty">Chargement de la collection…</div></div></section>
 </main>
 <footer class="footer"><div class="container">Mes P'tites Puff · Merci pour ta visite 💜</div></footer>
+<div class="overlay" id="accountOverlay">
+  <div class="modal">
+    <div class="modalhead">
+      <h2>Mon compte</h2>
+      <button class="closebtn" id="closeAccount">✕</button>
+    </div>
 
+    <div class="modalbody">
+      <div id="accountLogin">
+        <h3>Bienvenue !</h3>
+        <p>Connecte-toi ou crée ton compte pour retrouver tes commandes.</p>
+
+        <label>Adresse e-mail</label>
+        <input type="email" id="accountEmail" placeholder="Ton adresse e-mail">
+
+        <label>Mot de passe</label>
+        <input type="password" id="accountPassword" placeholder="Ton mot de passe">
+
+        <button class="cartbtn" id="accountSignIn">Se connecter</button>
+        <button class="addbtn" id="accountSignUp">Créer mon compte</button>
+      </div>
+
+      <div id="accountConnected" style="display:none">
+        <h3>Mon espace client</h3>
+        <p id="accountWelcome"></p>
+
+        <label>Nom complet</label>
+        <input id="accountFullName" placeholder="Ton nom">
+
+        <label>Téléphone</label>
+        <input id="accountPhone" placeholder="Ton numéro">
+
+        <button class="cartbtn" id="saveAccount">Enregistrer mes informations</button>
+
+        <h3>Mes commandes</h3>
+        <div id="accountOrders">Chargement...</div>
+
+        <button class="addbtn" id="accountSignOut">Me déconnecter</button>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="overlay" id="cartOverlay"><div class="drawer">
 <div class="drawerhead"><h2 id="drawerTitle">Ton panier</h2><button class="close" id="closeCart" aria-label="Fermer">×</button></div>
 <div id="cartStep">
