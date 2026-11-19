@@ -340,6 +340,123 @@ function updateSizes(productId){
   const sizes=(p.variants||[]).filter(v=>v.color===color&&Number(v.stock)>0);
   $('size-'+productId).innerHTML=sizes.map(v=>`<option value="${v.id}">${esc(v.size)} · ${v.stock} dispo.</option>`).join('');
 }
+  /* ===== FONCTIONNEMENT FICHE PRODUIT ===== */
+
+let selectedProduct = null;
+
+function openProduct(productId) {
+  const p = products.find(x => String(x.id) === String(productId));
+  if (!p) return;
+
+  selectedProduct = p;
+
+  $('modalProductName').textContent = p.name;
+  $('modalProductDescription').textContent = p.description || '';
+  $('modalProductPrice').textContent = money(p.price);
+
+  $('modalProductPhoto').innerHTML = p.photo_url
+    ? `<img src="${esc(p.photo_url)}" alt="${esc(p.name)}">`
+    : '<span class="placeholder">✦</span>';
+
+  const variants = (p.variants || []).filter(v => Number(v.stock) > 0);
+  const colors = [...new Set(variants.map(v => v.color))];
+
+  $('modalColor').innerHTML = colors.map(c =>
+    `<option value="${esc(c)}">${esc(c)}</option>`
+  ).join('');
+
+  $('modalColor').disabled = !variants.length;
+  $('modalSize').disabled = !variants.length;
+  $('modalAddToCart').disabled = !variants.length;
+
+  $('modalProductStock').textContent = variants.length
+    ? 'Disponible'
+    : 'Victime de son succès';
+
+  updateModalSizes();
+
+  $('productOverlay').classList.add('show');
+}
+
+function updateModalSizes() {
+  if (!selectedProduct) return;
+
+  const color = $('modalColor').value;
+
+  const variants = (selectedProduct.variants || [])
+    .filter(v => v.color === color && Number(v.stock) > 0);
+
+  $('modalSize').innerHTML = variants.map(v =>
+    `<option value="${esc(v.id)}">${esc(v.size)} · ${v.stock} dispo.</option>`
+  ).join('');
+
+  $('modalAddToCart').disabled = !variants.length;
+}
+
+$('modalColor').addEventListener('change', updateModalSizes);
+
+$('modalAddToCart').onclick = () => {
+  if (!selectedProduct) return;
+
+  const p = selectedProduct;
+  const variantId = $('modalSize').value;
+
+  const variant = (p.variants || []).find(
+    v => String(v.id) === String(variantId) && Number(v.stock) > 0
+  );
+
+  if (!variant) return;
+
+  $('productOverlay').classList.remove('show');
+
+  const existing = cart.find(
+    x => String(x.variant_id) === String(variant.id)
+  );
+
+  if (existing) {
+    if (existing.quantity >= variant.stock) {
+      return alert('La quantité disponible est atteinte.');
+    }
+    existing.quantity++;
+  } else {
+    cart.push({
+      variant_id: variant.id,
+      product_id: p.id,
+      name: p.name,
+      color: variant.color,
+      size: variant.size,
+      price: Number(p.price),
+      quantity: 1,
+      stock: Number(variant.stock)
+    });
+  }
+
+  renderCart();
+  $('cartOverlay').classList.add('show');
+  showStep('cart');
+};
+
+$('closeProduct').onclick = () => {
+  $('productOverlay').classList.remove('show');
+};
+
+$('productOverlay').addEventListener('click', e => {
+  if (e.target === $('productOverlay')) {
+    $('productOverlay').classList.remove('show');
+  }
+});
+
+$('products').addEventListener('click', e => {
+  if (e.target.closest('button, select, input, label')) return;
+
+  const card = e.target.closest('.product');
+  if (!card) return;
+
+  const index = Array.from($('products').children).indexOf(card);
+  const p = products[index];
+
+  if (p) openProduct(p.id);
+});
 function addToCart(productId){
   const p=products.find(x=>x.id===productId),variantId=$('size-'+productId)?.value;
   const variant=(p?.variants||[]).find(v=>v.id===variantId);
