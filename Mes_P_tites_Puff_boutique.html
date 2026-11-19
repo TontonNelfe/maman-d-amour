@@ -113,9 +113,9 @@ $('backToCart').onclick=()=>showStep('cart');
 document.querySelectorAll('input[name="delivery"]').forEach(r=>r.addEventListener('change',()=>{const delivery=document.querySelector('input[name="delivery"]:checked').value==='delivery';$('addressField').classList.toggle('hidden',!delivery);$('customerAddress').required=delivery}));
 $('orderForm').addEventListener('submit',e=>{
   e.preventDefault();
-  const delivery=document.querySelector('input[name="delivery"]:checked').value;
-  const payload={customer_name:$('customerName').value.trim(),phone:$('customerPhone').value.trim(),delivery_mode:delivery,address:delivery?$('customerAddress').value.trim():null,note:$('customerNote').value.trim(),items:cart.map(x=>({variant_id:x.variant_id,quantity:x.quantity}))};
-  if(payload.customer_name.length<2||payload.phone.length<6||(delivery&&payload.address.length<8)){alert('Vérifie ton nom, ton téléphone et ton adresse de livraison.');return}
+const isDelivery = delivery === 'delivery';
+const payload={customer_name:$('customerName').value.trim(),phone:$('customerPhone').value.trim(),delivery_mode:delivery,address:isDelivery?$('customerAddress').value.trim():null,note:$('customerNote').value.trim(),items:cart.map(x=>({variant_id:x.variant_id,quantity:x.quantity}))};
+if(payload.customer_name.length<2||payload.phone.length<6||(isDelivery&&payload.address.length<8)){alert('Vérifie ton nom, ton téléphone et ton adresse de livraison.');return}
   reviewPayload=payload;
   const total=cart.reduce((a,x)=>a+x.price*x.quantity,0);
   $('reviewContent').innerHTML=`<p><strong>${esc(payload.customer_name)}</strong><br>${esc(payload.phone)}</p><p>${delivery==='pickup'?'Retrait':'Livraison'}${delivery==='delivery'?'<br>'+esc(payload.address):''}</p>${cart.map(x=>`<div class="cartline"><span>${esc(x.name)} · ${esc(x.color)} / ${esc(x.size)} × ${x.quantity}</span><strong>${money(x.price*x.quantity)}</strong></div>`).join('')}<div class="total"><span>Total</span><span>${money(total)}</span></div>${payload.note?'<p><small>Note : '+esc(payload.note)+'</small></p>':''}`;
