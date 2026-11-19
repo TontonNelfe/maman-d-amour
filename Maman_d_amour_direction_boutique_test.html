@@ -229,6 +229,132 @@ async function loadShopData(){
 }
 
 
+function renderShop(){
+  const productCount = el('shopProductCount');
+  const orderCount = el('shopOrderCount');
+  const productRows = el('shopProductRows');
+  const orderRows = el('shopOrderRows');
+
+  if(productCount){
+    productCount.textContent =
+      shopProducts.length + (shopProducts.length > 1 ? ' articles' : ' article');
+  }
+
+  if(orderCount){
+    orderCount.textContent =
+      shopOrders.length + (shopOrders.length > 1 ? ' commandes' : ' commande');
+  }
+
+  // AFFICHAGE DES ARTICLES ET DES STOCKS
+  if(productRows){
+    productRows.innerHTML = shopProducts.map(p => {
+      const variants = shopVariants.filter(v => v.product_id === p.id);
+
+      const variantText = variants.length
+        ? variants.map(v =>
+            `${esc(v.color)} / ${esc(v.size)} : ${Number(v.stock) || 0}`
+          ).join('<br>')
+        : 'Aucune combinaison';
+
+      const photo = p.photo_url
+        ? `<img class="shop-thumb" src="${esc(p.photo_url)}" alt="">`
+        : '';
+
+      return `
+        <tr>
+          <td>${photo}${esc(p.name)}</td>
+          <td>${money(p.price)}</td>
+          <td>${variantText}</td>
+          <td>
+            <span class="pill">
+              ${p.active ? 'En ligne' : 'Masqué'}
+            </span>
+          </td>
+          <td>
+            <div class="actions">
+              <button type="button" class="secondary"
+                onclick="editShopProduct('${p.id}')">Modifier</button>
+              <button type="button" class="danger"
+                onclick="deleteShopProduct('${p.id}')">Supprimer</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('') ||
+    '<tr><td colspan="5" class="empty">Aucun article enregistré.</td></tr>';
+  }
+
+  // AFFICHAGE DES COMMANDES CLIENTS
+  if(orderRows){
+    const labels = {
+      pending: 'En attente',
+      accepted: 'Acceptée',
+      preparing: 'En préparation',
+      ready: 'Prête',
+      delivered: 'Livrée',
+      refused: 'Refusée'
+    };
+
+    orderRows.innerHTML = shopOrders.map(o => {
+      let items = o.items || [];
+
+      if(typeof items === 'string'){
+        try { items = JSON.parse(items); }
+        catch { items = []; }
+      }
+
+      const detail = Array.isArray(items)
+        ? items.map(item => {
+            const name = item.name || item.product_name || item.product || 'Article';
+            const qty = item.quantity || item.qty || 1;
+            const color = item.color || '';
+            const size = item.size || '';
+            return `${esc(name)} × ${qty}${color ? ' · ' + esc(color) : ''}${size ? ' / ' + esc(size) : ''}`;
+          }).join('<br>')
+        : 'Détail indisponible';
+
+      const customer = `
+        ${esc(o.customer_name || 'Client')}
+        ${o.phone ? '<br><small>' + esc(o.phone) + '</small>' : ''}
+        ${o.address ? '<br><small>' + esc(o.address) + '</small>' : ''}
+      `;
+
+      const status = labels[o.status] || o.status || 'Inconnu';
+
+      const options = Object.entries(labels).map(([value, label]) =>
+        `<option value="${value}" ${o.status === value ? 'selected' : ''}>${label}</option>`
+      ).join('');
+
+      const deleteButton = currentRole === 'direction'
+        ? `<button type="button" class="danger"
+             style="margin-top:7px"
+             onclick="deleteShopOrder('${o.id}')">🗑 Supprimer</button>`
+        : '';
+
+      return `
+        <tr>
+          <td>${o.created_at ? fmt(o.created_at) : '—'}</td>
+          <td>${customer}</td>
+          <td>${detail || 'Aucun détail'}</td>
+          <td>${money(o.total)}</td>
+          <td>
+            <span class="pill">${esc(status)}</span>
+            ${o.stock_deducted ? '<br><small class="muted">Stock déduit</small>' : ''}
+          </td>
+          <td>
+            <select aria-label="Statut de commande"
+              onchange="changeShopOrderStatus('${o.id}',this.value)">
+              ${options}
+            </select>
+            ${deleteButton}
+          </td>
+        </tr>
+      `;
+    }).join('') ||
+    '<tr><td colspan="6" class="empty">Aucune commande pour le moment.</td></tr>';
+  }
+}
+
 async function deleteShopOrder(id){
   if(currentRole!=='direction'){
     alert('Seule la direction peut supprimer une commande.');
