@@ -242,30 +242,29 @@ async function loadShopData(){
   shopProducts=p.data||[];shopVariants=v.data||[];shopOrders=o.data||[];
   renderShop();
 }
-function renderShop(){
-  el('shopProductCount').textContent=shopProducts.length+' article(s)';
-  el('shopOrderCount').textContent=shopOrders.length+' commande(s)';
-  el('shopProductRows').innerHTML=shopProducts.map(p=>{
-    const vs=shopVariants.filter(v=>v.product_id===p.id);
-    const stock=vs.reduce((n,v)=>n+Number(v.stock||0),0);
-    const variants=vs.length?vs.map(v=>`${esc(v.color)} / ${esc(v.size)} : ${v.stock}`).join('<br>'):'<span class="muted">Aucune variante</span>';
-    const photo=p.photo_url?`<img class="shop-thumb" src="${esc(p.photo_url)}" alt="">`:'';
-    return `<tr><td>${photo}<strong>${esc(p.name)}</strong><br><small class="muted">${esc(p.description||'')}</small></td><td>${money(p.price)}</td><td>${variants}<br><span class="pill">${stock} unité(s)</span></td><td><span class="pill">${p.active?'Publié':'Masqué'}</span></td><td><div class="actions"><button class="secondary" onclick="editShopProduct('${p.id}')">Modifier</button><button class="danger" onclick="deleteShopProduct('${p.id}')">Supprimer</button></div></td></tr>`;
-  }).join('')||'<tr><td colspan="5" class="empty">Aucun article. Ajoute ton premier produit ci-dessus.</td></tr>';
-  const labels={pending:'En attente',accepted:'Acceptée',preparing:'En préparation',ready:'Prête',delivered:'Livrée',refused:'Refusée'};
-  el('shopOrderRows').innerHTML=shopOrders.map(o=>{
-    const items=Array.isArray(o.items)?o.items:[];
-    const detail=items.map(i=>{
-      const v=shopVariants.find(x=>x.id===i.variant_id);
-      const p=v&&shopProducts.find(x=>x.id===v.product_id);
-      return `${esc(p?.name||'Article')} ${v?'· '+esc(v.color)+' / '+esc(v.size):''} × ${Number(i.quantity)||0}`;
-    }).join('<br>');
-    const dt=new Date(o.created_at).toLocaleString('fr-BE');
-    const customer=`<strong>${esc(o.customer_name)}</strong><br><small>${esc(o.phone)} · ${o.delivery_mode==='delivery'?'Livraison':'Retrait'}</small>${o.address?'<br><small>'+esc(o.address)+'</small>':''}${o.note?'<br><small class="muted">'+esc(o.note)+'</small>':''}`;
-    const options=['pending','accepted','preparing','ready','delivered','refused'].map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${labels[s]}</option>`).join('');
-    return `<tr><td>${dt}</td><td>${customer}</td><td>${detail}</td><td>${money(o.total)}</td><td><span class="pill">${labels[o.status]||o.status}</span>${o.stock_deducted?'<br><small class="muted">Stock déduit</small>':''}</td><td><select aria-label="Statut de commande" onchange="changeShopOrderStatus('${o.id}',this.value)">${options}</select></td></tr>`;
-  }).join('')||'<tr><td colspan="6" class="empty">Aucune commande pour le moment.</td></tr>';
+
+async function deleteShopOrder(id){
+  if(currentRole!=='direction'){
+    alert('Seule la direction peut supprimer une commande.');
+    return;
+  }
+
+  if(!confirm('Veux-tu vraiment supprimer définitivement cette commande ?'))return;
+
+  const {error}=await supabaseClient
+    .from('shop_orders')
+    .delete()
+    .eq('id',id);
+
+  if(error){
+    alert('Suppression impossible : '+error.message);
+    return;
+  }
+
+  alert('Commande supprimée.');
+  await loadShopData();
 }
+
 function resetShopForm(){
   editingShopProductId=null;el('shopProductForm').reset();el('spCost').value='0';el('spActive').checked=true;
   el('shopVariantRows').innerHTML='';addShopVariantRow('Noir','M',0);
