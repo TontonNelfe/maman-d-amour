@@ -303,15 +303,31 @@ function renderShop(){
         catch { items = []; }
       }
 
-      const detail = Array.isArray(items)
-        ? items.map(item => {
-            const name = item.name || item.product_name || item.product || 'Article';
-            const qty = item.quantity || item.qty || 1;
-            const color = item.color || '';
-            const size = item.size || '';
-            return `${esc(name)} × ${qty}${color ? ' · ' + esc(color) : ''}${size ? ' / ' + esc(size) : ''}`;
-          }).join('<br>')
-        : 'Détail indisponible';
+      
+const detail = Array.isArray(items) && items.length
+  ? items.map(item => {
+      const name = item.name || item.product_name || item.product || 'Article';
+      const qty = Number(item.quantity || item.qty || 1);
+      const color = item.color || '';
+      const size = item.size || '';
+      const price = Number(item.price || item.unit_price || 0);
+      const total = Number(item.total || item.subtotal || (price * qty));
+
+      return `
+        <div style="padding:8px 10px;margin:5px 0;background:#f3edff;border-radius:9px;color:#24133d">
+          <strong>${esc(name)}</strong>
+          <div style="font-size:12px;margin-top:4px">
+            Quantité : ${qty}
+            ${color ? ' · Couleur : ' + esc(color) : ''}
+            ${size ? ' · Taille : ' + esc(size) : ''}
+          </div>
+          <div style="font-weight:700;margin-top:4px">
+            ${total.toLocaleString('fr-BE', {style:'currency',currency:'EUR'})}
+          </div>
+        </div>
+      `;
+    }).join('')
+  : '<span style="color:#b45309">Détail indisponible</span>';
 
       const customer = `
         ${esc(o.customer_name || 'Client')}
