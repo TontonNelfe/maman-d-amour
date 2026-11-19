@@ -360,6 +360,64 @@ async function deleteShopOrder(id){
     alert('Seule la direction peut supprimer une commande.');
     return;
   }
+  
+async function markShopOrderPaid(id) {
+  if (currentRole !== 'direction') {
+    return alert('Action réservée à la direction.');
+  }
+
+  const method = prompt(
+    'Mode de paiement : Espèces, Carte, Virement ou Autre',
+    'Espèces'
+  );
+
+  if (method === null) return;
+
+  const allowed = ['Espèces', 'Carte', 'Virement', 'Autre'];
+  const paymentMethod = allowed.find(
+    x => x.toLowerCase() === method.trim().toLowerCase()
+  );
+
+  if (!paymentMethod) {
+    return alert('Mode de paiement invalide.');
+  }
+
+  const { data, error } = await supabaseClient.rpc(
+    'mda_mark_shop_order_paid',
+    {
+      p_order_id: id,
+      p_payment_method: paymentMethod
+    }
+  );
+
+  if (error) {
+    return alert('Erreur : ' + error.message);
+  }
+
+  if (data?.already_paid) {
+    alert('Cette commande est déjà payée.');
+  } else {
+    alert('Paiement enregistré ! Vente ajoutée à la comptabilité.');
+  }
+
+  const { data: row, error: readError } = await supabaseClient
+    .from('app_shared_state')
+    .select('data')
+    .eq('id', 1)
+    .single();
+
+  if (readError) {
+    alert('Paiement enregistré, mais actualisation de la comptabilité impossible.');
+  } else {
+    db = normalizeDB(row.data);
+    lastRemoteJSON = JSON.stringify(db);
+    localStorage.setItem(KEY, lastRemoteJSON);
+    render();
+  }
+
+  await loadShopData();
+}
+
 
   if(!confirm('Veux-tu vraiment supprimer définitivement cette commande ?'))return;
 
