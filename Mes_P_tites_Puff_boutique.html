@@ -112,7 +112,8 @@ $('checkoutBtn').onclick=()=>{if(!cart.length)return;showStep('checkout')};
 $('backToCart').onclick=()=>showStep('cart');
 document.querySelectorAll('input[name="delivery"]').forEach(r=>r.addEventListener('change',()=>{const delivery=document.querySelector('input[name="delivery"]:checked').value==='delivery';$('addressField').classList.toggle('hidden',!delivery);$('customerAddress').required=delivery}));
 $('orderForm').addEventListener('submit',e=>{
-  e.preventDefault();
+ e.preventDefault();
+const delivery = document.querySelector('input[name="delivery"]:checked').value;
 const isDelivery = delivery === 'delivery';
 const payload={customer_name:$('customerName').value.trim(),phone:$('customerPhone').value.trim(),delivery_mode:delivery,address:isDelivery?$('customerAddress').value.trim():null,note:$('customerNote').value.trim(),items:cart.map(x=>({variant_id:x.variant_id,quantity:x.quantity}))};
 if(payload.customer_name.length<2||payload.phone.length<6||(isDelivery&&payload.address.length<8)){alert('Vérifie ton nom, ton téléphone et ton adresse de livraison.');return}
