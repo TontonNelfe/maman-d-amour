@@ -178,6 +178,169 @@ $('confirmOrder').onclick=async()=>{
   cart=[];reviewPayload=null;renderCart();$('successMessage').textContent='Ta commande a bien été envoyée. Garde ton téléphone à portée de main pour être recontacté.';showStep('success');
 };
 $('finishOrder').onclick=()=>{$('cartOverlay').classList.remove('show');showStep('cart');$('orderForm').reset();$('addressField').classList.add('hidden');loadProducts()};
+  // ===== ESPACE CLIENT =====
+
+let currentUser = null;
+
+$('openAccount').onclick = () => {
+  $('accountOverlay').classList.add('show');
+};
+
+$('closeAccount').onclick = () => {
+  $('accountOverlay').classList.remove('show');
+};
+
+$('accountOverlay').addEventListener('click', e => {
+  if (e.target === $('accountOverlay')) {
+    $('accountOverlay').classList.remove('show');
+  }
+});
+
+async function loadCustomerAccount() {
+  const { data: { user }, error } = await client.auth.getUser();
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  currentUser = user;
+
+  $('accountLogin').style.display = user ? 'none' : 'block';
+  $('accountConnected').style.display = user ? 'block' : 'none';
+
+  if (user) {
+    $('accountWelcome').textContent = 'Connecté avec ' + user.email;
+
+    const { data } = await client
+      .from('shop_customer_profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    $('accountFullName').value = data?.full_name || '';
+    $('accountPhone').value = data?.phone || '';
+
+    await loadCustomerOrders();
+  }
+}
+
+$('accountSignUp').onclick = async () => {
+  const email = $('accountEmail').value.trim();
+  const password = $('accountPassword').value;
+
+  if (!email || password.length < 6) {
+    alert('Entre un e-mail et un mot de passe de 6 caractères minimum.');
+    return;
+  }
+
+  const { data, error } = await client.auth.signUp({ email, password });
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  if (!data.session) {
+    alert('Compte créé ! Vérifie tes e-mails pour confirmer ton inscription.');
+  } else {
+    alert('Bienvenue ! Ton compte est créé.');
+    await loadCustomerAccount();
+  }
+};
+
+$('accountSignIn').onclick = async () => {
+  const email = $('accountEmail').value.trim();
+  const password = $('accountPassword').value;
+
+  const { error } = await client.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  await loadCustomerAccount();
+};
+
+$('accountSignOut').onclick = async () => {
+  const { error } = await client.auth.signOut();
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  currentUser = null;
+  await loadCustomerAccount();
+};
+
+$('saveAccount').onclick = async () => {
+  if (!currentUser) return;
+
+  const { error } = await client
+    .from('shop_customer_profiles')
+    .upsert({
+      user_id: currentUser.id,
+      full_name: $('accountFullName').value.trim(),
+      phone: $('accountPhone').value.trim()
+    });
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  alert('Tes informations sont enregistrées !');
+};
+
+async function loadCustomerOrders() {
+  if (!currentUser) return;
+
+  const { data, error } = await client
+    .from('shop_orders')
+    .select('id,created_at,status,total,delivery_mode')
+    .eq('user_id', currentUser.id)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    $('accountOrders').textContent = 'Impossible de charger les commandes.';
+    console.error(error);
+    return;
+  }
+
+  if (!data.length) {
+    $('accountOrders').textContent = 'Tu n’as pas encore de commande.';
+    return;
+  }
+
+  const statuses = {
+    pending: 'En attente',
+    accepted: 'Acceptée',
+    preparing: 'En préparation',
+    ready: 'Prête',
+    delivered: 'Terminée',
+    refused: 'Refusée'
+  };
+
+  $('accountOrders').innerHTML = data.map(order => `
+    <div style="padding:12px;margin:10px 0;border:1px solid #ddd;border-radius:12px">
+      <strong>Commande #${order.id.slice(0,8)}</strong>
+      <p>${new Date(order.created_at).toLocaleDateString('fr-FR')}</p>
+      <p>Statut : ${statuses[order.status] || order.status}</p>
+      <p>Total : ${Number(order.total).toFixed(2)} €</p>
+    </div>
+  `).join('');
+}
+
+client.auth.onAuthStateChange(() => {
+  setTimeout(() => loadCustomerAccount(), 0);
+});
+
+loadCustomerAccount();
 loadProducts();
 </script>
 </body></html>
