@@ -218,8 +218,6 @@ function renderShop(){
     const customer=`<strong>${esc(o.customer_name)}</strong><br><small>${esc(o.phone)} · ${o.delivery_mode==='delivery'?'Livraison':'Retrait'}</small>${o.address?'<br><small>'+esc(o.address)+'</small>':''}${o.note?'<br><small class="muted">'+esc(o.note)+'</small>':''}`;
     const options=['pending','accepted','preparing','ready','delivered','refused'].map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${labels[s]}</option>`).join('');
     return `<tr><td>${dt}</td><td>${customer}</td><td>${detail}</td><td>${money(o.total)}</td><td><span class="pill">${labels[o.status]||o.status}</span>${o.stock_deducted?'<br><small class="muted">Stock déduit</small>':''}</td><td><select aria-label="Statut de commande" onchange="changeShopOrderStatus('${o.id}',this.value)">${options}</select></td></tr>`;
-  }).join('')||'<tr><td colspan="6" class="empty">Aucune commande pour le moment.</td></tr>';
-}
 function resetShopForm(){
   editingShopProductId=null;el('shopProductForm').reset();el('spCost').value='0';el('spActive').checked=true;
   el('shopVariantRows').innerHTML='';addShopVariantRow('Noir','M',0);
