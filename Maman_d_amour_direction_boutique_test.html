@@ -33,6 +33,8 @@ main{min-width:0}
 .stat:before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:linear-gradient(var(--accent),var(--accent2))}
 .stat small{color:var(--muted)}
 .stat strong{display:block;font-size:25px;margin-top:7px}
+.stat .stat-edit{margin-top:10px;display:flex;gap:6px;flex-wrap:wrap}
+.stat .stat-edit button{padding:6px 9px;font-size:12px}
 .positive{color:var(--accent)}.negative{color:var(--red)}
 .panel{padding:20px;margin-bottom:17px}
 .panel h2{font-size:18px;margin:0 0 15px;color:#f8dff5}
@@ -138,10 +140,45 @@ th{color:#d0b6d7;font-weight:650}
 
 <section id="dashboard" class="active">
 <div class="stats">
-<div class="stat"><small>CA encaissé · ce mois</small><strong id="monthCA">0,00 €</strong></div>
-<div class="stat"><small>CA encaissé · total</small><strong id="totalCA">0,00 €</strong></div>
-<div class="stat"><small>Dépenses enregistrées</small><strong id="totalExp">0,00 €</strong></div>
-<div class="stat"><small>Résultat estimé</small><strong id="profit">0,00 €</strong></div>
+<div class="stat">
+<small>CA encaissé · ce mois</small>
+<strong id="monthCA">0,00 €</strong>
+<div class="stat-edit">
+<button type="button" class="secondary" onclick="editDashboardValue('monthCA')">Modifier</button>
+<button type="button" class="secondary" onclick="resetDashboardValue('monthCA')">Auto</button>
+</div>
+</div>
+
+<div class="stat">
+<small>CA encaissé · total</small>
+<strong id="totalCA">0,00 €</strong>
+<div class="stat-edit">
+<button type="button" class="secondary" onclick="editDashboardValue('totalCA')">Modifier</button>
+<button type="button" class="secondary" onclick="resetDashboardValue('totalCA')">Auto</button>
+</div>
+</div>
+
+<div class="stat">
+<small>Dépenses enregistrées</small>
+<strong id="totalExp">0,00 €</strong>
+<div class="stat-edit">
+<button type="button" class="secondary" onclick="editDashboardValue('totalExp')">Modifier</button>
+<button type="button" class="secondary" onclick="resetDashboardValue('totalExp')">Auto</button>
+</div>
+</div>
+
+<div class="stat">
+<small>Résultat estimé</small>
+<strong id="profit">0,00 €</strong>
+<div class="stat-edit">
+<button type="button" class="secondary" onclick="editDashboardValue('profit')">Modifier</button>
+<button type="button" class="secondary" onclick="resetDashboardValue('profit')">Auto</button>
+</div>
+</div>
+</div>
+
+<div class="note" style="margin-bottom:18px">
+Les 4 indicateurs peuvent être personnalisés indépendamment des ventes et dépenses. Le bouton « Auto » rétablit le calcul automatique.
 </div>
 
 <div class="panel">
@@ -513,7 +550,7 @@ const local=JSON.parse(localStorage.getItem(KEY)||'null');
 if(local&&confirm('La base commune est vide. Importer les données déjà présentes sur cet ordinateur ?')){
 db=normalizeDB(local);
 }else{
-db={products:[],sales:[],expenses:[],moves:[]};
+db=normalizeDB(null);
 }
 
 const {error:insertError}=await supabaseClient
@@ -615,11 +652,25 @@ if(data.session)startSharedApp(data.session.user);
 ========================= */
 
 function normalizeDB(value){
+const overrides=value?.dashboardOverrides||{};
+
+const cleanOverride=v=>{
+if(v===null||v===undefined||v==='')return null;
+const n=Number(v);
+return Number.isFinite(n)?n:null;
+};
+
 return{
 products:Array.isArray(value?.products)?value.products:[],
 sales:Array.isArray(value?.sales)?value.sales:[],
 expenses:Array.isArray(value?.expenses)?value.expenses:[],
-moves:Array.isArray(value?.moves)?value.moves:[]
+moves:Array.isArray(value?.moves)?value.moves:[],
+dashboardOverrides:{
+monthCA:cleanOverride(overrides.monthCA),
+totalCA:cleanOverride(overrides.totalCA),
+totalExp:cleanOverride(overrides.totalExp),
+profit:cleanOverride(overrides.profit)
+}
 };
 }
 
@@ -659,6 +710,105 @@ function save(){
 localStorage.setItem(KEY,JSON.stringify(db));
 render();
 queueRemoteSave();
+}
+
+/* =========================
+   MODIFICATION DES 4 INDICATEURS
+========================= */
+
+function editDashboardValue(key){
+
+if(currentRole!=='direction'){
+alert('Cette modification est réservée à la direction.');
+return;
+}
+
+const labels={
+monthCA:'CA encaissé · ce mois',
+totalCA:'CA encaissé · total',
+totalExp:'Dépenses enregistrées',
+profit:'Résultat estimé'
+};
+
+if(!Object.prototype.hasOwnProperty.call(labels,key))return;
+
+const calculated=calculatedDashboardValues();
+const current=db.dashboardOverrides[key]??calculated[key];
+
+const answer=prompt(
+'Modifier : '+labels[key]+'\n\n'+
+'Montant actuel : '+money(current)+'\n\n'+
+'Entre le nouveau montant en euros.\n'+
+'Tu peux utiliser une virgule ou un point.',
+Number(current).toFixed(2).replace('.',',')
+);
+
+if(answer===null)return;
+
+const normalized=answer.trim()
+.replace(/\s/g,'')
+.replace(/[€]/g,'')
+.replace(',','.');
+
+if(normalized===''){
+resetDashboardValue(key);
+return;
+}
+
+const value=Number(normalized);
+
+if(!Number.isFinite(value)){
+alert('Montant invalide. Exemple : 295,00');
+return;
+}
+
+if(key!=='profit'&&value<0){
+alert('Ce montant ne peut pas être négatif.');
+return;
+}
+
+db.dashboardOverrides[key]=value;
+save();
+
+alert('Indicateur modifié et sauvegardé !');
+}
+
+function resetDashboardValue(key){
+
+if(currentRole!=='direction'){
+alert('Cette modification est réservée à la direction.');
+return;
+}
+
+if(!db.dashboardOverrides)return;
+
+db.dashboardOverrides[key]=null;
+save();
+}
+
+function calculatedDashboardValues(){
+
+const paid=db.sales.filter(s=>s.paid);
+const now=new Date();
+const month=now.getMonth();
+const year=now.getFullYear();
+
+const ca=paid.reduce((a,s)=>a+Number(s.total||0),0);
+
+const mca=paid.filter(s=>{
+const d=new Date(s.date);
+return d.getMonth()===month&&d.getFullYear()===year;
+}).reduce((a,s)=>a+Number(s.total||0),0);
+
+const exp=db.expenses.reduce((a,x)=>a+Number(x.amount||0),0);
+const cogs=paid.reduce((a,s)=>a+(Number(s.cost)||0),0);
+
+return{
+monthCA:mca,
+totalCA:ca,
+totalExp:exp,
+profit:ca-exp-cogs
+};
 }
 
 /* =========================
@@ -865,18 +1015,6 @@ el('saleQty').value=1;
 save();
 };
 
-function markPaid(id){
-
-const s=db.sales.find(x=>x.id===id);
-
-if(s){
-s.paid=true;
-s.paidDate=date();
-s.method='Espèces';
-save();
-}
-}
-
 /* =========================
    DEPENSES
 ========================= */
@@ -898,8 +1036,7 @@ amount
 e.target.reset();
 save();
 };
-
-/* =========================
+   /* =========================
    MODIFICATION DES OPERATIONS
 ========================= */
 
@@ -1005,10 +1142,12 @@ return d.getMonth()===month&&d.getFullYear()===year;
 const exp=db.expenses.reduce((a,x)=>a+Number(x.amount||0),0);
 const cogs=paid.reduce((a,s)=>a+(Number(s.cost)||0),0);
 
-el('monthCA').textContent=money(mca);
-el('totalCA').textContent=money(ca);
-el('totalExp').textContent=money(exp);
-el('profit').textContent=money(ca-exp-cogs);
+const overrides=db.dashboardOverrides||{};
+
+el('monthCA').textContent=money(overrides.monthCA??mca);
+el('totalCA').textContent=money(overrides.totalCA??ca);
+el('totalExp').textContent=money(overrides.totalExp??exp);
+el('profit').textContent=money(overrides.profit??(ca-exp-cogs));
 
 el('unpaid').textContent=money(
 db.sales.filter(s=>!s.paid).reduce((a,s)=>a+Number(s.total||0),0)
@@ -1194,7 +1333,18 @@ return;
 }
 
 if(confirm('Effacer toutes les données partagées de l’entreprise ? Cette action est irréversible.')){
-db={products:[],sales:[],expenses:[],moves:[]};
+db={
+products:[],
+sales:[],
+expenses:[],
+moves:[],
+dashboardOverrides:{
+monthCA:null,
+totalCA:null,
+totalExp:null,
+profit:null
+}
+};
 save();
 }
 }
@@ -1462,8 +1612,7 @@ ${finishButton}
 
 }).join('')||'<tr><td colspan="6" class="empty">Aucune commande client pour le moment.</td></tr>';
 }
-
-function resetShopForm(){
+   function resetShopForm(){
 
 editingShopProductId=null;
 el('shopProductForm').reset();
