@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Maman d’amour — Gestion</title>
+<style>
+:root{--bg:#100b17;--panel:#1b1224;--panel2:#281a33;--line:#493052;--text:#fff5ff;--muted:#c0a9c8;--accent:#e8a4d5;--accent2:#a77bd2;--red:#ff829f;--yellow:#f3c5ff;--shadow:0 18px 45px #05020870}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 12% 0%,#512b5a 0,transparent 36%),radial-gradient(ellipse at 100% 15%,#38214f 0,transparent 32%),var(--bg);color:var(--text);font:15px/1.55 Inter,system-ui,Arial;min-height:100vh}button,input,select{font:inherit}button{cursor:pointer;border:0;border-radius:11px;padding:10px 15px;background:linear-gradient(120deg,var(--accent),var(--accent2));color:#211027;font-weight:750;box-shadow:0 5px 18px #d58bc52a;transition:transform .18s,filter .18s}button:hover{filter:brightness(1.08);transform:translateY(-1px)}.wrap{max-width:1320px;margin:auto;padding:28px}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:25px;padding:22px 25px;border:1px solid #815a89;border-radius:22px;background:linear-gradient(115deg,#3b2347e8,#1b1224ed 60%,#34203e);box-shadow:var(--shadow)}.top h1{margin:0;font-size:30px;letter-spacing:.2px;background:linear-gradient(90deg,#fff0fb,#e7a8d7,#c9a7f2);-webkit-background-clip:text;background-clip:text;color:transparent}.sub,.muted{color:var(--muted)}.layout{display:grid;grid-template-columns:235px 1fr;gap:20px}.nav,.panel,.stat{background:linear-gradient(145deg,#211629,#17101f);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}.nav{padding:13px;height:max-content;position:sticky;top:15px}.nav button{display:block;width:100%;text-align:left;margin:5px 0;background:transparent;color:var(--muted);box-shadow:none}.nav button.active,.nav button:hover{background:linear-gradient(110deg,#59365e,#3b2848);color:#fff0fc;border:1px solid #9a70a5;transform:none}main{min-width:0}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}.stat{padding:18px;position:relative;overflow:hidden}.stat:before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:linear-gradient(var(--accent),var(--accent2))}.stat small{color:var(--muted)}.stat strong{display:block;font-size:25px;margin-top:7px}.positive{color:var(--accent)}.negative{color:var(--red)}.panel{padding:20px;margin-bottom:17px}.panel h2{font-size:18px;margin:0 0 15px;color:#f8dff5}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}.field{display:flex;flex-direction:column;gap:6px;flex:1;min-width:145px}.field label{font-size:12px;color:var(--muted)}input,select{width:100%;padding:11px 12px;border:1px solid #5a3e62;border-radius:10px;background:#120d19;color:var(--text);outline:none}input:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px #e8a4d522}.secondary{background:#34243d;color:var(--text);border:1px solid #684d70;box-shadow:none}.danger{background:linear-gradient(120deg,#a43d61,#71304f);color:white}.tabs section{display:none}.tabs section.active{display:block}table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:12px 9px;border-bottom:1px solid #3c2b43}th{color:#d0b6d7;font-weight:650}td:last-child,th:last-child{text-align:right}.tablewrap{overflow:auto}.pill{display:inline-block;padding:4px 10px;border-radius:99px;background:#382642;border:1px solid #684d70;font-size:12px}.empty{text-align:center;color:var(--muted);padding:25px}.note{font-size:12px;color:var(--muted);margin-top:10px}.bar{height:9px;background:#3a2942;border-radius:20px;overflow:hidden}.bar span{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}.hidden{display:none!important}.actions{display:flex;gap:6px;justify-content:flex-end}.actions button{padding:6px 9px;font-size:12px}.chart{display:flex;align-items:end;gap:8px;height:150px;padding:10px 0}.colbar{flex:1;min-width:12px;background:linear-gradient(180deg,#f0b4dc,#9870c6);border-radius:7px 7px 0 0;position:relative;box-shadow:0 0 16px #d78fc52a}.colbar small{position:absolute;bottom:-24px;left:50%;transform:translateX(-50%);color:var(--muted);font-size:10px}.foot{color:var(--muted);font-size:12px;text-align:center;padding:18px}.brand-mark{display:inline-grid;place-items:center;width:38px;height:38px;margin-right:10px;border-radius:12px;background:linear-gradient(135deg,#f0b4dc,#9a72c9);color:#24112b;font-weight:900;vertical-align:middle}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.nav{position:static;display:flex;overflow:auto}.nav button{white-space:nowrap;width:auto}.stats{grid-template-columns:repeat(2,1fr)}}@media(max-width:480px){.wrap{padding:12px}.stats{gap:8px}.stat{padding:12px}.stat strong{font-size:20px}.top{align-items:flex-start;flex-direction:column;padding:18px}.top h1{font-size:25px}}
+
+.auth-panel{max-width:460px;margin:8vh auto 30px;padding:28px;background:linear-gradient(145deg,#211629,#17101f);border:1px solid #815a89;border-radius:22px;box-shadow:var(--shadow)}.auth-panel h2{margin-top:0;color:#f8dff5}.auth-panel .field{margin:12px 0}.auth-status{font-size:13px;color:var(--muted);margin-top:12px;min-height:20px}.sync-pill{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border:1px solid #684d70;border-radius:99px;color:#f4dff5;font-size:12px;background:#281a33}.top-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.shop-thumb{width:48px;height:48px;object-fit:cover;border-radius:9px;border:1px solid #684d70;vertical-align:middle;margin-right:8px}.variant-input{min-width:90px}\n.shop-thumb{width:48px;height:48px;object-fit:cover;border-radius:9px;border:1px solid #684d70;vertical-align:middle;margin-right:8px}.variant-input{min-width:90px}\n</style>
+<style>
+
+/* =========================================================
+   MAMAN D’AMOUR — FUTURISTE FLASH
+   Refonte complète de la présentation, sans toucher au moteur JS.
+   ========================================================= */
+:root{
+ --bg:#07050c;--panel:rgba(25,12,34,.86);--panel2:rgba(33,16,45,.92);
+ --line:rgba(255,105,220,.30);--text:#fffaff;--muted:#c7b3d2;
+ --violet:#bd5cff;--pink:#ff4fd8;--cyan:#e8b5ff;--green:#a4ffc9;
+ --accent:#ff4fd8;--accent2:#bd5cff;--red:#ff668f;--yellow:#f2c879;
+ --shadow:0 18px 55px #0009;
+}
+html{min-height:100%;scroll-behavior:smooth}
+body{
+ margin:0!important;min-height:100vh;color:var(--text)!important;
+ font-family:Inter,Segoe UI,Arial,sans-serif!important;
+ background:radial-gradient(ellipse at 12% 8%,rgba(190,45,255,.34),transparent 34%),
+ radial-gradient(ellipse at 92% 14%,rgba(255,55,190,.24),transparent 30%),
+ radial-gradient(ellipse at 55% 100%,rgba(125,45,255,.24),transparent 38%),var(--bg)!important;
+}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.16;
+ background-image:linear-gradient(rgba(255,130,235,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(190,120,255,.10) 1px,transparent 1px);
+ background-size:44px 44px;mask-image:linear-gradient(to bottom,black,transparent 85%)}
+button,input,select,textarea{font:inherit}
+button{border:1px solid rgba(255,105,220,.34)!important;border-radius:11px!important;padding:10px 15px!important;
+ background:linear-gradient(120deg,#a020f0,#ff35c8)!important;color:#fff!important;font-weight:700!important;
+ box-shadow:0 5px 22px #d52bff32!important;transition:transform .18s,filter .18s,box-shadow .18s!important}
+button:hover{filter:brightness(1.13)!important;transform:translateY(-1px)!important;box-shadow:0 7px 28px #ed42e955!important}
+button.secondary{background:rgba(255,255,255,.055)!important;color:#f6eaff!important;border:1px solid var(--line)!important;box-shadow:none!important}
+button.danger{background:linear-gradient(120deg,#a92b64,#e83e8c)!important;color:#fff!important}
+.wrap{position:relative;z-index:1;width:100%;max-width:none!important;margin:0!important;padding:0!important}
+#appShell{min-height:100vh;display:grid;grid-template-columns:250px minmax(0,1fr);grid-template-rows:auto 1fr;align-items:start}
+#appShell.hidden{display:none!important}
+.layout{display:contents!important}
+/* Sidebar */
+.nav{grid-column:1;grid-row:1/3;position:fixed;z-index:5;left:0;top:0;bottom:0;width:250px!important;
+ padding:25px 17px!important;margin:0!important;border:0!important;border-right:1px solid var(--line)!important;border-radius:0!important;
+ background:rgba(12,10,23,.86)!important;backdrop-filter:blur(22px);display:flex!important;flex-direction:column;align-items:stretch!important;gap:7px!important;
+ box-shadow:12px 0 45px #0003;overflow-y:auto}
+.nav:before{content:"✦  MAMAN D’AMOUR\\A      FUTURE MANAGEMENT";white-space:pre;display:block;padding:7px 5px 25px 56px;margin:0 0 15px;
+ min-height:44px;box-sizing:border-box;font-size:11px;font-weight:800;letter-spacing:1.6px;line-height:1.8;color:#fffaff;
+ background:linear-gradient(135deg,#a020f0,#ff35c8);background-size:43px 43px;background-repeat:no-repeat;background-position:left 3px top 4px;
+ text-shadow:0 0 16px #ff4fd8}
+.nav:after{content:"●  Système opérationnel\\A Console privée · Accès sécurisé";white-space:pre;display:block;margin-top:auto;padding:15px 12px;border:1px solid var(--line);border-radius:14px;
+ background:linear-gradient(135deg,#17132a,#101522);color:var(--green);font-size:10px;line-height:2}
+.nav button{width:100%;text-align:left!important;display:flex;align-items:center;gap:12px;padding:12px!important;border:1px solid transparent!important;
+ border-radius:11px!important;background:transparent!important;color:#aaa2bf!important;box-shadow:none!important;font-size:12px!important;font-weight:550!important}
+.nav button:hover{background:#ffffff09!important;color:white!important;transform:none!important}
+.nav button.active{color:white!important;background:linear-gradient(100deg,#a020f044,#ff35c833)!important;border-color:#ff62dc88!important;
+ box-shadow:inset 3px 0 #ff65dc,0 0 25px #d52bff35!important}
+/* Header */
+.top{grid-column:2;grid-row:1;display:flex;justify-content:space-between;align-items:center;gap:18px;
+ margin:0!important;padding:25px 36px 20px!important;border:0!important;border-bottom:1px solid #ff69dc22!important;border-radius:0!important;
+ background:linear-gradient(100deg,rgba(15,9,25,.82),rgba(15,9,25,.40))!important;box-shadow:none!important;backdrop-filter:blur(16px)}
+.top h1{display:flex;align-items:center;gap:12px;margin:0!important;font-size:23px!important;letter-spacing:-.5px;color:#fff!important}
+.brand-mark{width:40px;height:40px;display:inline-grid;place-items:center;border-radius:13px;background:linear-gradient(135deg,#a020f0,#ff35c8);box-shadow:0 0 27px #f02bdc88;color:#fff;font-size:20px}
+.sub{margin-top:5px;color:var(--muted)!important;font-size:11px!important}
+.top-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.sync-pill{display:inline-flex;align-items:center;padding:6px 10px;border-radius:30px;border:1px solid #a4ffc944;background:#a4ffc911;color:var(--green)!important;font-size:10px}
+/* Main canvas */
+.tabs{grid-column:2;grid-row:2;min-width:0;width:100%;padding:27px 36px 45px!important;margin:0!important}
+.tabs section{display:none}.tabs section.active{display:block}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:0 0 16px!important}
+.stat,.panel{position:relative;overflow:hidden;background:var(--panel)!important;border:1px solid var(--line)!important;border-radius:17px!important;
+ padding:18px!important;backdrop-filter:blur(18px);box-shadow:0 14px 45px #00000025!important}
+.stat:after{content:"";position:absolute;width:110px;height:110px;border-radius:50%;right:-50px;top:-60px;background:var(--violet);filter:blur(55px);opacity:.28;pointer-events:none}
+.stat small{position:relative;z-index:1;display:block;color:var(--muted)!important;font-size:10px!important;letter-spacing:.7px;text-transform:uppercase}
+.stat strong{position:relative;z-index:1;display:block;margin-top:14px;color:#fff!important;font-size:26px!important;letter-spacing:-.8px}
+.stat .stat-edit{position:relative;z-index:1}
+.panel{margin:0 0 15px!important}
+.panel h2{margin:0 0 14px!important;padding:0!important;color:#fff!important;font-size:13px!important;font-weight:700!important;letter-spacing:.1px}
+.panel h3{color:#fff!important}
+#dashboard>.panel:nth-of-type(2){border-color:#ff69dc42!important}
+#dashboard>.panel:nth-of-type(3){background:linear-gradient(135deg,rgba(25,12,34,.92),rgba(25,17,42,.88))!important}
+#dashboard>.panel:nth-of-type(4) .stats{grid-template-columns:repeat(4,minmax(0,1fr))}
+.row{gap:12px!important;align-items:end}
+.field{min-width:0;gap:6px!important}
+.field label{color:var(--muted)!important;font-size:11px!important}
+input,select,textarea{width:100%;min-width:0;background:rgba(7,5,12,.72)!important;color:#fffaff!important;border:1px solid rgba(255,105,220,.25)!important;border-radius:10px!important;padding:11px 12px!important;outline:none!important}
+input::placeholder,textarea::placeholder{color:#82758f!important}
+input:focus,select:focus,textarea:focus{border-color:#ff4fd8!important;box-shadow:0 0 0 3px #ff4fd822,0 0 20px #bd5cff22!important}
+input[type=checkbox]{width:auto;accent-color:#ff4fd8}
+.secondary{background:rgba(255,255,255,.055)!important;color:#f6eaff!important}
+.danger{background:linear-gradient(120deg,#a92b64,#e83e8c)!important;color:#fff!important}
+.tablewrap{overflow-x:auto;border:1px solid #ff69dc22;border-radius:12px}
+table{width:100%;border-collapse:collapse;min-width:620px}
+th{text-align:left;color:#817994!important;font-size:9px!important;letter-spacing:1px;font-weight:600!important;padding:12px 10px!important;background:#ffffff05}
+td{padding:12px 10px!important;border-top:1px solid #ffffff0c!important;font-size:11px!important;color:#f8efff}
+tbody tr:hover{background:#ffffff08!important}
+.pill{border-radius:30px!important;border:1px solid var(--line)!important;background:#a020f022!important;color:#f7dfff!important;padding:5px 9px!important}
+.note,.empty{color:var(--muted)!important;background:rgba(255,255,255,.025)!important;border:1px solid #ff69dc1c!important;border-radius:12px;padding:12px!important}
+.chart{height:195px!important;display:flex!important;align-items:end;gap:13px!important;padding:22px 3px 0!important;border-radius:12px;background:linear-gradient(180deg,#ffffff04,transparent)}
+.colbar{min-width:20px;border-radius:8px 8px 3px 3px!important;background:linear-gradient(180deg,#ff8be8,#a33cff 80%)!important;box-shadow:0 0 22px #ed42e977!important;position:relative}
+.colbar small{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);color:#a99bb8!important;font-size:9px}
+.foot{color:var(--muted)!important}
+.auth-panel{position:relative;z-index:2;width:min(460px,calc(100% - 32px))!important;margin:9vh auto!important;padding:30px!important;
+ background:rgba(25,12,34,.92)!important;border:1px solid var(--line)!important;border-radius:22px!important;box-shadow:0 20px 80px #0009,0 0 45px #bd5cff20!important;backdrop-filter:blur(22px)}
+.auth-panel:before{content:"✦  MAMAN D’AMOUR\\A FUTURE MANAGEMENT";white-space:pre;display:block;color:#f5dfff;font-size:12px;font-weight:800;letter-spacing:2px;line-height:2;margin-bottom:20px}
+.auth-panel h2{color:#fff!important;font-size:21px!important;margin:0 0 8px!important}
+.auth-panel .muted,.muted{color:var(--muted)!important}
+.auth-status{padding:11px 12px!important;border:1px solid #ff69dc25!important;border-radius:10px!important;background:#ffffff06!important;color:var(--muted)!important}
+.hidden{display:none!important}
+.actions{display:flex;gap:7px;flex-wrap:wrap}
+.shop-thumb{border-radius:10px;border:1px solid var(--line)}
+.variant-input{padding:8px!important}
+/* Responsive */
+@media(max-width:1050px){
+ #appShell{grid-template-columns:205px minmax(0,1fr)}.nav{width:205px!important;padding:20px 12px!important}
+ .top{padding:22px 22px 17px!important}.tabs{padding:22px!important}.stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:700px){
+ #appShell{display:block;min-height:100vh}.nav{position:relative;top:auto;bottom:auto;width:100%!important;height:auto;padding:10px!important;
+  display:flex!important;flex-direction:row;gap:6px!important;border-right:0!important;border-bottom:1px solid var(--line)!important;overflow-x:auto;white-space:nowrap}
+ .nav:before{display:none}.nav:after{display:none}.nav button{width:auto;flex:0 0 auto;padding:10px!important;font-size:11px!important}
+ .top{padding:17px 14px!important;align-items:flex-start;flex-direction:column}.top h1{font-size:20px!important}.top-actions{width:100%}.top-actions button{font-size:11px!important;padding:8px 10px!important}
+ .tabs{padding:15px 12px 30px!important}.stats{gap:8px!important}.stat{padding:13px!important}.stat strong{font-size:20px!important}.stat small{font-size:9px!important}
+ #dashboard>.panel:nth-of-type(4) .stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .panel{padding:14px!important}.row{display:flex;flex-direction:column;align-items:stretch}.field{width:100%}
+ .tablewrap{margin:0 -2px}td,th{padding:9px 7px!important}
+}
+
+</style></head><body><div class="wrap">
+<section id="authPanel" class="auth-panel">
+  <h2>Connexion à Maman d’amour</h2>
+  <p class="muted">Connecte-toi pour accéder aux données communes de l’entreprise.</p>
+  <form id="authForm">
+    <div class="field"><label>Adresse e-mail</label><input id="authEmail" type="email" autocomplete="username" required placeholder="nom@exemple.com"></div>
+    <div class="field"><label>Mot de passe</label><input id="authPassword" type="password" autocomplete="current-password" minlength="6" required placeholder="6 caractères minimum"></div>
+    <div class="row"><button type="submit" id="loginBtn">Se connecter</button><button type="button" class="secondary" id="signupBtn">Créer un compte</button></div>
+  </form>
+  <div id="authStatus" class="auth-status">Connexion sécurisée par Supabase.</div>
+  <button type="button" class="secondary" id="pendingLogoutBtn" style="margin-top:10px">Se déconnecter</button>
+</section>
+<div id="appShell" class="hidden">
+<header class="top"><div><h1><span class="brand-mark">M</span>Maman d’amour</h1><div class="sub">Gestion commerciale · Comptabilité · Produits & stocks</div><div style="margin-top:10px"><span class="sync-pill" id="syncStatus">● Connexion en cours…</span></div></div><div class="top-actions"><button class="secondary" onclick="exportCSV()">Exporter les opérations CSV</button><button class="danger" id="logoutBtn">Déconnexion</button></div></header>
+<div class="layout"><nav class="nav"><button class="active" data-tab="dashboard">▦ Tableau de bord</button><button data-tab="products">▤ Produits & stocks</button><button data-tab="sales">＋ Enregistrer une vente</button><button data-tab="expenses">− Dépenses</button><button data-tab="history">◷ Historique</button><button data-tab="shop">🛍 Boutique Mes P'tites Puff</button><button data-tab="members" id="membersNav" class="hidden">♙ Employés</button></nav>
+<main class="tabs">
+<section id="dashboard" class="active"><div class="stats"><div class="stat"><small>CA encaissé · ce mois</small><strong id="monthCA">0,00 €</strong></div><div class="stat"><small>CA encaissé · total</small><strong id="totalCA">0,00 €</strong></div><div class="stat"><small>Dépenses enregistrées</small><strong id="totalExp">0,00 €</strong></div><div class="stat"><small>Résultat estimé</small><strong id="profit">0,00 €</strong></div></div>
+<div class="panel"><h2>Évolution du chiffre d'affaires — 7 derniers jours</h2><div class="chart" id="chart"></div><div class="note">Seules les ventes marquées comme encaissées sont incluses dans le chiffre d'affaires encaissé.</div></div>
+<div class="panel"><h2>Alertes de stock</h2><div id="stockAlerts" class="note">Aucune alerte.</div></div><div class="panel"><h2>À suivre</h2><div class="stats" style="margin:0"><div><small class="muted">Commandes non encaissées</small><strong id="unpaid">0,00 €</strong></div><div><small class="muted">Valeur du stock au coût d'achat</small><strong id="stockValue">0,00 €</strong></div><div><small class="muted">Références produits</small><strong id="productCount">0</strong></div><div><small class="muted">Unités en stock</small><strong id="units">0</strong></div></div></div></section>
+<section id="products"><div class="panel"><h2 id="productFormTitle">Ajouter un produit</h2><form id="productForm" class="row"><div class="field"><label>Nom du produit</label><input id="pname" required placeholder="Ex. Article A"></div><div class="field"><label>Référence (facultatif)</label><input id="psku" placeholder="REF-001"></div><div class="field"><label>Prix de vente (€)</label><input id="pprice" type="number" min="0" step="0.01" required></div><div class="field"><label>Coût d'achat unitaire (€)</label><input id="pcost" type="number" min="0" step="0.01" value="0" required></div><div class="field"><label>Stock initial</label><input id="pqty" type="number" min="0" step="1" value="0" required></div><button id="productSubmit">Ajouter</button><button type="button" id="cancelEdit" class="secondary hidden" onclick="cancelProductEdit()">Annuler</button></form></div><div class="panel"><h2>Inventaire</h2><div class="tablewrap"><table><thead><tr><th>Produit</th><th>Réf.</th><th>Prix vente</th><th>Coût achat</th><th>Stock</th><th></th></tr></thead><tbody id="productRows"></tbody></table></div></div><div class="panel"><h2>Mouvement de stock</h2><form id="stockForm" class="row"><div class="field"><label>Produit</label><select id="stockProduct" required></select></div><div class="field"><label>Type</label><select id="stockType"><option value="in">Entrée</option><option value="out">Sortie / ajustement</option></select></div><div class="field"><label>Quantité</label><input id="stockQty" type="number" min="1" step="1" required></div><div class="field"><label>Motif</label><input id="stockReason" placeholder="Réapprovisionnement, casse…"></div><button>Enregistrer</button></form></div></section>
+<section id="sales"><div class="panel"><h2>Enregistrer une vente</h2><form id="saleForm" class="row"><div class="field"><label>Produit</label><select id="saleProduct" required></select></div><div class="field"><label>Quantité</label><input id="saleQty" type="number" min="1" step="1" value="1" required></div><div class="field"><label>Prix unitaire (€)</label><input id="salePrice" type="number" min="0" step="0.01" required></div><div class="field"><label>Encaissement</label><select id="salePaid"><option value="yes">Payée / encaissée</option><option value="no">En attente de paiement</option></select></div><div class="field"><label>Mode de paiement</label><select id="saleMethod"><option>Espèces</option><option>Carte</option><option>Virement</option><option>Autre</option></select></div><div class="field"><label>Nom du client (facultatif)</label><input id="saleClient" placeholder="Nom du client"></div><div class="field" style="flex-basis:100%"><label>Précision / message (facultatif)</label><input id="saleNote" placeholder="Ex. commande spéciale, livraison, détail…"></div><button>Valider la vente</button></form><div class="note">Une vente encaissée augmente le CA encaissé. Une vente en attente reste séparée. Le stock est déduit à la validation.</div></div><div class="panel"><h2>Commandes en attente de paiement</h2><div class="tablewrap"><table><thead><tr><th>Date</th><th>Produit / client</th><th>Qté</th><th>Montant</th><th></th></tr></thead><tbody id="pendingRows"></tbody></table></div></div></section>
+<section id="expenses"><div class="panel"><h2>Enregistrer une dépense</h2><form id="expenseForm" class="row"><div class="field"><label>Libellé</label><input id="ename" required placeholder="Ex. Fournitures"></div><div class="field"><label>Catégorie</label><select id="ecat"><option>Achat de marchandises</option><option>Transport</option><option>Frais généraux</option><option>Autre</option></select></div><div class="field"><label>Montant (€)</label><input id="eamount" type="number" min="0.01" step="0.01" required></div><button>Ajouter la dépense</button></form></div></section>
+<section id="history"><div class="panel"><h2>Historique des opérations</h2><div class="tablewrap"><table><thead><tr><th>Date</th><th>Type</th><th>Détail</th><th>Montant</th><th>Statut</th></tr></thead><tbody id="historyRows"></tbody></table></div><button class="secondary" onclick="clearData()" style="margin-top:14px">Effacer toutes les données</button></div></section>
+
+<section id="shop">
+  <div class="panel">
+    <h2>🛍 Boutique publique — Mes P'tites Puff</h2>
+    <p class="muted">Ajoute ici les articles visibles dans la boutique publique. Les produits et stocks sont partagés avec la boutique en ligne.</p>
+    <div class="row" style="margin-bottom:12px">
+      <span class="pill" id="shopProductCount">0 article</span>
+      <span class="pill" id="shopOrderCount">0 commande</span>
+      <button type="button" class="secondary" onclick="loadShopData()">Actualiser la boutique</button>
+    </div>
+    <form id="shopProductForm">
+      <h3 id="shopFormTitle">Ajouter un article</h3>
+      <div class="row">
+        <div class="field"><label>Nom de l'article</label><input id="spName" required maxlength="100" placeholder="Nom du produit"></div>
+        <div class="field"><label>Prix de vente (€)</label><input id="spPrice" type="number" min="0" step="0.01" required></div>
+        <div class="field"><label>Coût d'achat (€) — privé</label><input id="spCost" type="number" min="0" step="0.01" value="0"></div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <div class="field" style="flex-basis:100%"><label>Description publique</label><input id="spDescription" maxlength="500" placeholder="Description affichée dans la boutique"></div>
+        <div class="field"><label>Photo du produit</label><input id="spPhoto" type="file" accept="image/*"></div>
+        <div class="field"><label>Ou URL de la photo</label><input id="spPhotoUrl" type="url" placeholder="https://..."></div>
+      </div>
+      <div class="row" style="margin:12px 0">
+        <label style="display:flex;align-items:center;gap:8px;color:var(--muted)"><input id="spActive" type="checkbox" checked style="width:auto"> Publier cet article dans la boutique</label>
+      </div>
+      <div class="panel" style="background:#160f1d;margin:12px 0">
+        <h3 style="margin-top:0">Goûts, styles et stocks</h3>
+        <p class="note">Ajoute une ligne par combinaison goût/style. Exemple : Fraise / Classique / 5.</p>
+        <div class="tablewrap"><table><thead><tr><th>Goût</th><th>Style</th><th>Quantité</th><th></th></tr></thead><tbody id="shopVariantRows"></tbody></table></div>
+        <datalist id="shopSizeOptions"><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option></datalist>
+        <button type="button" class="secondary" onclick="addShopVariantRow()">＋ Ajouter une combinaison</button>
+      </div>
+      <div class="row"><button type="submit" id="shopSaveBtn">Enregistrer l'article</button><button type="button" class="secondary hidden" id="shopCancelBtn" onclick="resetShopForm()">Annuler</button></div>
+      <div class="note" id="shopFormStatus" role="status"></div>
+    </form>
+  </div>
+  <div class="panel">
+    <h2>Articles de la boutique</h2>
+    <div class="tablewrap"><table><thead><tr><th>Article</th><th>Prix</th><th>Variantes / stock</th><th>Visibilité</th><th>Actions</th></tr></thead><tbody id="shopProductRows"><tr><td colspan="5" class="empty">Chargement…</td></tr></tbody></table></div>
+  </div>
+  <div class="panel">
+    <h2>Commandes clients</h2>
+    <p class="note">Le stock est déduit automatiquement lors du passage à « Acceptée », une seule fois par commande.</p>
+    <div class="tablewrap"><table><thead><tr><th>Date</th><th>Client</th><th>Commande</th><th>Total</th><th>Statut</th><th>Action</th></tr></thead><tbody id="shopOrderRows"><tr><td colspan="6" class="empty">Chargement…</td></tr></tbody></table></div>
+    <div class="note" id="shopOrderStatus" role="status"></div>
+  </div>
+</section>
+
+
+<section id="shop">
+  <div class="panel">
+    <h2>🛍 Boutique publique — Mes P'tites Puff</h2>
+    <p class="muted">Ajoute ici les articles visibles dans la boutique publique. Les produits et stocks sont partagés avec la boutique en ligne.</p>
+    <div class="row" style="margin-bottom:12px">
+      <span class="pill" id="shopProductCount">0 article</span>
+      <span class="pill" id="shopOrderCount">0 commande</span>
+      <button type="button" class="secondary" onclick="loadShopData()">Actualiser la boutique</button>
+    </div>
+    <form id="shopProductForm">
+      <h3 id="shopFormTitle">Ajouter un article</h3>
+      <div class="row">
+        <div class="field"><label>Nom de l'article</label><input id="spName" required maxlength="100" placeholder="Nom du produit"></div>
+        <div class="field"><label>Prix de vente (€)</label><input id="spPrice" type="number" min="0" step="0.01" required></div>
+        <div class="field"><label>Coût d'achat (€) — privé</label><input id="spCost" type="number" min="0" step="0.01" value="0"></div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <div class="field" style="flex-basis:100%"><label>Description publique</label><input id="spDescription" maxlength="500" placeholder="Description affichée dans la boutique"></div>
+        <div class="field"><label>Photo du produit</label><input id="spPhoto" type="file" accept="image/*"></div>
+        <div class="field"><label>Ou URL de la photo</label><input id="spPhotoUrl" type="url" placeholder="https://..."></div>
+      </div>
+      <div class="row" style="margin:12px 0">
+        <label style="display:flex;align-items:center;gap:8px;color:var(--muted)"><input id="spActive" type="checkbox" checked style="width:auto"> Publier cet article dans la boutique</label>
+      </div>
+      <div class="panel" style="background:#160f1d;margin:12px 0">
+        <h3 style="margin-top:0">Goûts, styles et stocks</h3>
+        <p class="note">Ajoute une ligne par combinaison goût/style. Exemple : Fraise / Classique / 5.</p>
+        <div class="tablewrap"><table><thead><tr><th>Goût</th><th>Style</th><th>Quantité</th><th></th></tr></thead><tbody id="shopVariantRows"></tbody></table></div>
+        <datalist id="shopSizeOptions"><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option></datalist>
+        <button type="button" class="secondary" onclick="addShopVariantRow()">＋ Ajouter une combinaison</button>
+      </div>
+      <div class="row"><button type="submit" id="shopSaveBtn">Enregistrer l'article</button><button type="button" class="secondary hidden" id="shopCancelBtn" onclick="resetShopForm()">Annuler</button></div>
+      <div class="note" id="shopFormStatus" role="status"></div>
+    </form>
+  </div>
+  <div class="panel">
+    <h2>Articles de la boutique</h2>
+    <div class="tablewrap"><table><thead><tr><th>Article</th><th>Prix</th><th>Variantes / stock</th><th>Visibilité</th><th>Actions</th></tr></thead><tbody id="shopProductRows"><tr><td colspan="5" class="empty">Chargement…</td></tr></tbody></table></div>
+  </div>
+  <div class="panel">
+    <h2>Commandes clients</h2>
+    <p class="note">Le stock est déduit automatiquement lors du passage à « Acceptée », une seule fois par commande.</p>
+    <div class="tablewrap"><table><thead><tr><th>Date</th><th>Client</th><th>Commande</th><th>Total</th><th>Statut</th><th>Action</th></tr></thead><tbody id="shopOrderRows"><tr><td colspan="6" class="empty">Chargement…</td></tr></tbody></table></div>
+    <div class="note" id="shopOrderStatus" role="status"></div>
+  </div>
+</section>
+
+<section id="members"><div class="panel"><h2>Gestion des employés</h2><p class="muted">Valide les comptes en attente ou suspends un accès. Seule la direction peut effectuer ces actions.</p><div class="tablewrap"><table><thead><tr><th>E-mail</th><th>Rôle</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="memberRows"><tr><td colspan="4" class="empty">Chargement…</td></tr></tbody></table></div><button class="secondary" id="refreshMembers" type="button" style="margin-top:12px">Actualiser la liste</button><div id="memberStatus" class="note" role="status"></div></div></section>
+</main></div><div class="foot">Données synchronisées en ligne · Les changements sont partagés avec les autres appareils connectés.</div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL='https://odexadvmnxjpwbqtbjsc.supabase.co';
+const SUPABASE_KEY='sb_publishable_Trzd_aKbHzzh6mRaz1GIGg_lFRsuM5u';
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let currentUser=null,currentRole=null,startingUserId=null,remoteReady=false,remoteChannel=null,saveTimer=null,saveQueue=Promise.resolve(),lastRemoteJSON='';
+const authStatus=document.getElementById('authStatus');
+function setAuthStatus(message){if(authStatus)authStatus.textContent=message}
+function setSyncStatus(message){const n=document.getElementById('syncStatus');if(n)n.textContent='● '+message}
+async function signIn(){const email=document.getElementById('authEmail').value.trim(),password=document.getElementById('authPassword').value;setAuthStatus('Connexion en cours…');const {error}=await supabaseClient.auth.signInWithPassword({email,password});if(error)setAuthStatus('Erreur : '+error.message)}
+async function signUp(){const email=document.getElementById('authEmail').value.trim(),password=document.getElementById('authPassword').value;if(!email||password.length<6){setAuthStatus('Indique un e-mail valide et un mot de passe de 6 caractères minimum.');return}setAuthStatus('Création du compte…');const {data,error}=await supabaseClient.auth.signUp({email,password});if(error){setAuthStatus('Erreur : '+error.message);return}if(!data.session)setAuthStatus('Compte créé. Vérifie ta boîte mail pour confirmer ton adresse, puis connecte-toi.');else setAuthStatus('Compte créé, connexion…')}
+async function startSharedApp(user){
+  if(startingUserId===user.id||currentUser?.id===user.id)return;
+  startingUserId=user.id;remoteReady=false;
+  document.getElementById('appShell').classList.add('hidden');
+  document.getElementById('authPanel').classList.remove('hidden');
+  setAuthStatus('Vérification des autorisations…');
+  const {data:member,error:memberError}=await supabaseClient.from('app_members').select('role,status').eq('user_id',user.id).maybeSingle();
+  if(memberError){startingUserId=null;setAuthStatus('Impossible de vérifier les autorisations. La mise à jour de sécurité Supabase est-elle installée ? '+memberError.message);return}
+  if(!member||member.status!=='approved'){
+    startingUserId=null;
+    const message=!member?'Compte non enregistré dans la liste des employés.':member.status==='suspended'?'Ce compte est suspendu. Contacte la direction.':'Ton compte est en attente de validation par la direction.';
+    setAuthStatus(message);
+    return;
+  }
+  currentUser=user;currentRole=member.role;startingUserId=null;
+  const membersNav=document.getElementById('membersNav');
+  if(membersNav)membersNav.classList.toggle('hidden',currentRole!=='direction');
+  const clearButton=document.querySelector('#history button[onclick="clearData()"]');
+  if(clearButton)clearButton.classList.toggle('hidden',currentRole!=='direction');
+  document.getElementById('authPanel').classList.add('hidden');document.getElementById('appShell').classList.remove('hidden');setSyncStatus('Chargement des données…');
+  const {data:row,error}=await supabaseClient.from('app_shared_state').select('data').eq('id',1).maybeSingle();
+  if(error){setSyncStatus('Erreur de base de données');alert('Impossible de lire les données communes : '+error.message+'\nVérifie les règles SQL de la table app_shared_state.');return}
+  if(row){db=normalizeDB(row.data);localStorage.setItem(KEY,JSON.stringify(db));lastRemoteJSON=JSON.stringify(db);render();setSyncStatus('Synchronisé · '+user.email)}
+  else {const local=JSON.parse(localStorage.getItem(KEY)||'null');if(local&&confirm('La base commune est vide. Importer les données déjà présentes sur cet ordinateur ?'))db=normalizeDB(local);else db={products:[],sales:[],expenses:[],moves:[]};const {error:insertError}=await supabaseClient.from('app_shared_state').upsert({id:1,data:db});if(insertError){setSyncStatus('Erreur de sauvegarde');alert('Impossible de créer les données communes : '+insertError.message);return}lastRemoteJSON=JSON.stringify(db);localStorage.setItem(KEY,lastRemoteJSON);render();setSyncStatus('Synchronisé · '+user.email)}
+  remoteReady=true;
+  if(currentRole==='direction')loadMembers();
+  loadShopData();
+  if(remoteChannel)supabaseClient.removeChannel(remoteChannel);
+  remoteChannel=supabaseClient.channel('shared-state-changes').on('postgres_changes',{event:'UPDATE',schema:'public',table:'app_shared_state',filter:'id=eq.1'},payload=>{if(!remoteReady||!payload.new?.data)return;const incoming=normalizeDB(payload.new.data),json=JSON.stringify(incoming);if(json!==lastRemoteJSON){db=incoming;lastRemoteJSON=json;localStorage.setItem(KEY,json);render();setSyncStatus('Mis à jour · '+new Date().toLocaleTimeString('fr-BE'))}}).subscribe();
+}
+async function loadMembers(){
+  if(currentRole!=='direction'||!currentUser)return;
+  const body=document.getElementById('memberRows'),status=document.getElementById('memberStatus');
+  if(body)body.innerHTML='<tr><td colspan="4" class="empty">Chargement…</td></tr>';
+  if(status)status.textContent='';
+  const {data,error}=await supabaseClient.from('app_members').select('user_id,email,role,status').order('email');
+  if(error){if(body)body.innerHTML='<tr><td colspan="4" class="empty">Impossible de charger les employés.</td></tr>';if(status)status.textContent='Erreur : '+error.message;return}
+  if(!data?.length){body.innerHTML='<tr><td colspan="4" class="empty">Aucun compte employé.</td></tr>';return}
+  body.innerHTML=data.map(m=>{
+    const self=m.user_id===currentUser.id;
+    const state=m.status==='approved'?'Approuvé':m.status==='suspended'?'Suspendu':'En attente';
+    const actions=self?'<span class="muted">Compte direction</span>':m.status==='approved'
+      ?`<button class="danger" type="button" onclick="setMemberStatus('${m.user_id}','suspended')">Suspendre</button>`
+      :`<button type="button" onclick="setMemberStatus('${m.user_id}','approved')">${m.status==='suspended'?'Réactiver':'Approuver'}</button> <button class="danger" type="button" onclick="setMemberStatus('${m.user_id}','suspended')">Suspendre</button>`;
+    return `<tr><td>${esc(m.email||m.user_id)}</td><td>${esc(m.role||'employe')}</td><td><span class="pill">${state}</span></td><td><div class="actions">${actions}</div></td></tr>`;
+  }).join('');
+}
+async function setMemberStatus(userId,statusValue){
+  if(currentRole!=='direction'||!currentUser){alert('Action réservée à la direction.');return}
+  if(userId===currentUser.id){alert('Tu ne peux pas modifier ton propre accès direction ici.');return}
+  const label=statusValue==='approved'?'approuver':'suspendre';
+  if(!confirm('Confirmer : '+label+' ce compte ?'))return;
+  const updateValues=statusValue==='approved'?{status:statusValue,approved_at:new Date().toISOString(),approved_by:currentUser.id}:{status:statusValue,approved_at:null,approved_by:null};
+  const {error}=await supabaseClient.from('app_members').update(updateValues).eq('user_id',userId);
+  if(error){alert('La modification a échoué : '+error.message);return}
+  const status=document.getElementById('memberStatus');if(status)status.textContent='Statut mis à jour.';
+  await loadMembers();
+}
+document.getElementById('refreshMembers')?.addEventListener('click',loadMembers);
+function normalizeDB(value){return {products:Array.isArray(value?.products)?value.products:[],sales:Array.isArray(value?.sales)?value.sales:[],expenses:Array.isArray(value?.expenses)?value.expenses:[],moves:Array.isArray(value?.moves)?value.moves:[]}}
+function queueRemoteSave(){if(!currentUser||!remoteReady)return;clearTimeout(saveTimer);saveTimer=setTimeout(()=>{const snapshot=JSON.parse(JSON.stringify(db));saveQueue=saveQueue.then(async()=>{setSyncStatus('Synchronisation…');const {error}=await supabaseClient.from('app_shared_state').upsert({id:1,data:snapshot});if(error){setSyncStatus('Erreur de synchronisation');console.error(error);alert('La modification reste sur cet ordinateur mais n’a pas été envoyée : '+error.message)}else{lastRemoteJSON=JSON.stringify(snapshot);setSyncStatus('Synchronisé · '+new Date().toLocaleTimeString('fr-BE'))}})},350)}
+document.getElementById('pendingLogoutBtn').addEventListener('click',async()=>{await supabaseClient.auth.signOut();currentUser=null;currentRole=null;startingUserId=null;setAuthStatus('Déconnecté.')});
+document.getElementById('authForm').addEventListener('submit',e=>{e.preventDefault();signIn()});document.getElementById('signupBtn').addEventListener('click',signUp);document.getElementById('logoutBtn').addEventListener('click',async()=>{remoteReady=false;if(remoteChannel)await supabaseClient.removeChannel(remoteChannel);await supabaseClient.auth.signOut();currentUser=null;currentRole=null;startingUserId=null;document.getElementById('appShell').classList.add('hidden');document.getElementById('authPanel').classList.remove('hidden');setAuthStatus('Déconnecté.')});
+supabaseClient.auth.onAuthStateChange((event,session)=>{if(session?.user&&!currentUser)startSharedApp(session.user);else if(!session){currentUser=null;currentRole=null;startingUserId=null;remoteReady=false}});
+supabaseClient.auth.getSession().then(({data})=>{if(data.session)startSharedApp(data.session.user)});
+const KEY='gestion_commerciale_demo_v1';let db=JSON.parse(localStorage.getItem(KEY)||'{"products":[],"sales":[],"expenses":[],"moves":[]}');const money=n=>(Number(n)||0).toLocaleString('fr-BE',{style:'currency',currency:'EUR'});const date=()=>new Date().toISOString();const fmt=d=>new Date(d).toLocaleString('fr-BE',{dateStyle:'short',timeStyle:'short'});const save=()=>{localStorage.setItem(KEY,JSON.stringify(db));render();queueRemoteSave()};const el=id=>document.getElementById(id);const product=id=>db.products.find(p=>p.id===id);function switchTab(id){document.querySelectorAll('.tabs section').forEach(s=>s.classList.toggle('active',s.id===id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id))}document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
+let editingProductId=null;el('productForm').onsubmit=e=>{e.preventDefault();let data={name:el('pname').value.trim(),sku:el('psku').value.trim(),price:+el('pprice').value,cost:+el('pcost').value,qty:+el('pqty').value};if(editingProductId){let p=product(editingProductId);if(p){let difference=data.qty-p.qty;p.name=data.name;p.sku=data.sku;p.price=data.price;p.cost=data.cost;p.qty=data.qty;if(difference)db.moves.push({date:date(),type:'Ajustement produit',detail:p.name+' · stock modifié de '+difference+' unité(s)',amount:0})}}else{db.products.push({id:crypto.randomUUID(),...data});db.moves.push({date:date(),type:'Entrée initiale',detail:data.name+' · '+data.qty+' unités',amount:0})}cancelProductEdit();save()};function editProduct(id){let p=product(id);if(!p)return;editingProductId=id;el('pname').value=p.name;el('psku').value=p.sku||'';el('pprice').value=p.price;el('pcost').value=p.cost;el('pqty').value=p.qty;el('productFormTitle').textContent='Modifier le produit';el('productSubmit').textContent='Enregistrer les modifications';el('cancelEdit').classList.remove('hidden');el('pname').focus();switchTab('products')}function cancelProductEdit(){editingProductId=null;el('productForm').reset();el('pcost').value=0;el('pqty').value=0;el('productFormTitle').textContent='Ajouter un produit';el('productSubmit').textContent='Ajouter';el('cancelEdit').classList.add('hidden')}
+el('stockForm').onsubmit=e=>{e.preventDefault();let p=product(el('stockProduct').value),q=+el('stockQty').value;if(!p)return;if(el('stockType').value==='out'&&q>p.qty)return alert('Stock insuffisant.');p.qty+=el('stockType').value==='in'?q:-q;db.moves.push({date:date(),type:el('stockType').value==='in'?'Entrée de stock':'Sortie de stock',detail:p.name+' · '+q+' unités'+(el('stockReason').value?' · '+el('stockReason').value:''),amount:0});e.target.reset();save()};
+el('saleProduct').onchange=()=>{let p=product(el('saleProduct').value);if(p)el('salePrice').value=p.price};el('saleForm').onsubmit=e=>{e.preventDefault();let p=product(el('saleProduct').value),q=+el('saleQty').value;if(!p||q>p.qty)return alert('Produit introuvable ou stock insuffisant.');let s={id:crypto.randomUUID(),date:date(),productId:p.id,name:p.name,qty:q,price:+el('salePrice').value,total:q*(+el('salePrice').value),paid:el('salePaid').value==='yes',method:el('saleMethod').value,client:el('saleClient').value.trim(),note:el('saleNote').value.trim(),cost:q*p.cost};p.qty-=q;db.sales.push(s);db.moves.push({date:s.date,type:'Vente',detail:p.name+' · '+q+' unités'+(s.client?' · Client : '+s.client:'')+(s.note?' · '+s.note:''),amount:s.total});e.target.reset();el('saleQty').value=1;save()};
+el('expenseForm').onsubmit=e=>{e.preventDefault();db.expenses.push({date:date(),name:el('ename').value,category:el('ecat').value,amount:+el('eamount').value});e.target.reset();save()};function markPaid(id){let s=db.sales.find(x=>x.id===id);if(s){s.paid=true;s.paidDate=date();s.method='Espèces';save()}}function removeProduct(id){if(db.sales.some(s=>s.productId===id))return alert('Ce produit figure déjà dans des ventes : conserve-le pour garder l’historique.');if(confirm('Supprimer ce produit ?')){db.products=db.products.filter(p=>p.id!==id);save()}}function render(){let paid=db.sales.filter(s=>s.paid),now=new Date(),month=now.getMonth(),year=now.getFullYear(),ca=paid.reduce((a,s)=>a+s.total,0),mca=paid.filter(s=>{let d=new Date(s.date);return d.getMonth()===month&&d.getFullYear()===year}).reduce((a,s)=>a+s.total,0),exp=db.expenses.reduce((a,x)=>a+x.amount,0),cogs=paid.reduce((a,s)=>a+s.cost,0);el('monthCA').textContent=money(mca);el('totalCA').textContent=money(ca);el('totalExp').textContent=money(exp);el('profit').textContent=money(ca-exp-cogs);el('unpaid').textContent=money(db.sales.filter(s=>!s.paid).reduce((a,s)=>a+s.total,0));el('stockValue').textContent=money(db.products.reduce((a,p)=>a+p.qty*p.cost,0));el('productCount').textContent=db.products.length;el('units').textContent=db.products.reduce((a,p)=>a+p.qty,0);let low=db.products.filter(p=>p.qty<=3);el('stockAlerts').innerHTML=low.length?low.map(p=>`<span class=\"pill\">${esc(p.name)} : ${p.qty} restant(s)</span>`).join(' '):'Aucun produit à stock faible.';
+let opts=db.products.map(p=>`<option value="${p.id}">${esc(p.name)} (stock : ${p.qty})</option>`).join('');el('stockProduct').innerHTML=opts;el('saleProduct').innerHTML=opts;if(!el('salePrice').value&&db.products[0])el('salePrice').value=db.products[0].price;
+el('productRows').innerHTML=db.products.map(p=>`<tr><td>${esc(p.name)}</td><td>${esc(p.sku||'—')}</td><td>${money(p.price)}</td><td>${money(p.cost)}</td><td><span class="pill">${p.qty}</span></td><td><div class="actions"><button class="secondary" onclick="editProduct('${p.id}')">Modifier</button><button class="danger" onclick="removeProduct('${p.id}')">Supprimer</button></div></td></tr>`).join('')||'<tr><td colspan="6" class="empty">Aucun produit enregistré.</td></tr>';
+el('pendingRows').innerHTML=db.sales.filter(s=>!s.paid).map(s=>`<tr><td>${fmt(s.date)}</td><td>${esc(s.name)}${s.client?'<br><span class="muted">'+esc(s.client)+'</span>':''}${s.note?'<br><small class="muted">'+esc(s.note)+'</small>':''}</td><td>${s.qty}</td><td>${money(s.total)}</td><td><button onclick="markPaid('${s.id}')">Marquer encaissée</button></td></tr>`).join('')||'<tr><td colspan="5" class="empty">Aucun paiement en attente.</td></tr>';
+let hist=[...db.sales.map(s=>({date:s.date,type:'Vente',detail:s.name+' × '+s.qty+(s.client?' · Client : '+s.client:'')+(s.note?' · '+s.note:''),amount:s.total,status:s.paid?'Encaissée':'En attente'})),...db.expenses.map(x=>({date:x.date,type:'Dépense',detail:x.name+' · '+x.category,amount:-x.amount,status:'Enregistrée'})),...db.moves.map(x=>({date:x.date,type:x.type,detail:x.detail,amount:x.amount,status:'Enregistré'}))].sort((a,b)=>b.date.localeCompare(a.date));el('historyRows').innerHTML=hist.map(x=>`<tr><td>${fmt(x.date)}</td><td>${esc(x.type)}</td><td>${esc(x.detail)}</td><td class="${x.amount<0?'negative':''}">${money(x.amount)}</td><td>${esc(x.status)}</td></tr>`).join('')||'<tr><td colspan="5" class="empty">Aucune opération.</td></tr>';
+let days=[];for(let i=6;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);let key=d.toLocaleDateString('fr-CA');let sum=paid.filter(s=>new Date(s.date).toLocaleDateString('fr-CA')===key).reduce((a,s)=>a+s.total,0);days.push({label:d.toLocaleDateString('fr-BE',{weekday:'short'}),sum})}let max=Math.max(1,...days.map(x=>x.sum));el('chart').innerHTML=days.map(x=>`<div class="colbar" title="${money(x.sum)}" style="height:${Math.max(4,x.sum/max*100)}%"><small>${x.label}</small></div>`).join('')}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}function exportCSV(){let rows=[['Date','Type','Détail','Montant','Statut'],...db.sales.map(s=>[s.date,'Vente',s.name+' x '+s.qty,s.total,s.paid?'Encaissée':'En attente']),...db.expenses.map(x=>[x.date,'Dépense',x.name+' - '+x.category,-x.amount,'Enregistrée']),...db.moves.map(x=>[x.date,x.type,x.detail,x.amount,'Enregistré'])];let csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\n');let a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));a.download='operations.csv';a.click();URL.revokeObjectURL(a.href)}function clearData(){if(currentRole!=='direction'){alert('Cette action est réservée à la direction.');return}if(confirm('Effacer toutes les données partagées de l’entreprise ? Cette action est irréversible.')){db={products:[],sales:[],expenses:[],moves:[]};save()}}
+// --- Gestion de la boutique Mes P'tites Puff ---
+let shopProducts=[], shopVariants=[], shopOrders=[], editingShopProductId=null;
+function addShopVariantRow(color='',size='M',stock=0){
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td><input class="variant-input sv-color" required maxlength="40" placeholder="Fraise" value="${esc(color)}"></td>
+    <td><input class="variant-input sv-size" required maxlength="20" placeholder="Classique" value="${esc(size)}" list="shopSizeOptions"></td>
+    <td><input class="variant-input sv-stock" type="number" min="0" step="1" required value="${Number(stock)||0}"></td>
+    <td><button type="button" class="danger" onclick="this.closest('tr').remove()">Retirer</button></td>`;
+  el('shopVariantRows').appendChild(tr);
+}
+async function loadShopData(){
+  if(!currentUser||!currentRole)return;
+  el('shopProductRows').innerHTML='<tr><td colspan="5" class="empty">Chargement…</td></tr>';
+  const [p,v,o]=await Promise.all([
+    supabaseClient.from('shop_products').select('*').order('display_order').order('created_at',{ascending:false}),
+    supabaseClient.from('shop_variants').select('*').order('color').order('size'),
+    supabaseClient.from('shop_orders').select('*').order('created_at',{ascending:false}).limit(100)
+  ]);
+  if(p.error||v.error||o.error){
+    const err=p.error||v.error||o.error;
+    el('shopProductRows').innerHTML=`<tr><td colspan="5" class="empty">Erreur de chargement : ${esc(err.message)}</td></tr>`;
+    return;
+  }
+  shopProducts=p.data||[];shopVariants=v.data||[];shopOrders=o.data||[];
+  renderShop();
+}
+function renderShop(){
+  el('shopProductCount').textContent=shopProducts.length+' article(s)';
+  el('shopOrderCount').textContent=shopOrders.length+' commande(s)';
+  el('shopProductRows').innerHTML=shopProducts.map(p=>{
+    const vs=shopVariants.filter(v=>v.product_id===p.id);
+    const stock=vs.reduce((n,v)=>n+Number(v.stock||0),0);
+    const variants=vs.length?vs.map(v=>`${esc(v.color)} / ${esc(v.size)} : ${v.stock}`).join('<br>'):'<span class="muted">Aucune variante</span>';
+    const photo=p.photo_url?`<img class="shop-thumb" src="${esc(p.photo_url)}" alt="">`:'';
+    return `<tr><td>${photo}<strong>${esc(p.name)}</strong><br><small class="muted">${esc(p.description||'')}</small></td><td>${money(p.price)}</td><td>${variants}<br><span class="pill">${stock} unité(s)</span></td><td><span class="pill">${p.active?'Publié':'Masqué'}</span></td><td><div class="actions"><button class="secondary" onclick="editShopProduct('${p.id}')">Modifier</button><button class="danger" onclick="deleteShopProduct('${p.id}')">Supprimer</button></div></td></tr>`;
+  }).join('')||'<tr><td colspan="5" class="empty">Aucun article. Ajoute ton premier produit ci-dessus.</td></tr>';
+  const labels={pending:'En attente',accepted:'Acceptée',preparing:'En préparation',ready:'Prête',delivered:'Livrée',refused:'Refusée'};
+  el('shopOrderRows').innerHTML=shopOrders.map(o=>{
+    const items=Array.isArray(o.items)?o.items:[];
+    const detail=items.map(i=>{
+      const v=shopVariants.find(x=>x.id===i.variant_id);
+      const p=v&&shopProducts.find(x=>x.id===v.product_id);
+      return `${esc(p?.name||'Article')} ${v?'· '+esc(v.color)+' / '+esc(v.size):''} × ${Number(i.quantity)||0}`;
+    }).join('<br>');
+    const dt=new Date(o.created_at).toLocaleString('fr-BE');
+    const customer=`<strong>${esc(o.customer_name)}</strong><br><small>${esc(o.phone)} · ${o.delivery_mode==='delivery'?'Livraison':'Retrait'}</small>${o.address?'<br><small>'+esc(o.address)+'</small>':''}${o.note?'<br><small class="muted">'+esc(o.note)+'</small>':''}`;
+    const options=['pending','accepted','preparing','ready','delivered','refused'].map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${labels[s]}</option>`).join('');
+    const finishButton=(o.status==='delivered'||o.status==='refused')?'':`<button type="button" onclick="finishShopOrder('${o.id}')">Terminer la commande</button>`;
+    const alreadyRecorded=Array.isArray(db.sales)&&db.sales.some(s=>s.shopOrderId===o.id);
+    return `<tr><td>${dt}</td><td>${customer}</td><td>${detail}</td><td>${money(o.total)}</td><td><span class="pill">${labels[o.status]||o.status}</span>${alreadyRecorded?'<br><small class="muted">Vente comptabilisée</small>':''}${o.stock_deducted?'<br><small class="muted">Stock déduit</small>':''}</td><td><div class="actions"><select aria-label="Statut de commande" onchange="changeShopOrderStatus('${o.id}',this.value)">${options}</select>${finishButton}</div></td></tr>`;
+  }).join('')||'<tr><td colspan="6" class="empty">Aucune commande pour le moment.</td></tr>';
+}
+function resetShopForm(){
+  editingShopProductId=null;el('shopProductForm').reset();el('spCost').value='0';el('spActive').checked=true;
+  el('shopVariantRows').innerHTML='';addShopVariantRow('Noir','M',0);
+  el('shopFormTitle').textContent='Ajouter un article';el('shopSaveBtn').textContent="Enregistrer l'article";
+  el('shopCancelBtn').classList.add('hidden');el('shopFormStatus').textContent='';
+}
+async function editShopProduct(id){
+  const p=shopProducts.find(x=>x.id===id);if(!p)return;
+  editingShopProductId=id;el('spName').value=p.name;el('spPrice').value=p.price;el('spCost').value=p.purchase_cost;
+  el('spDescription').value=p.description||'';el('spPhotoUrl').value=p.photo_url||'';el('spPhoto').value='';el('spActive').checked=!!p.active;
+  el('shopVariantRows').innerHTML='';
+  const vars=shopVariants.filter(v=>v.product_id===id);
+  (vars.length?vars:[{color:'Noir',size:'M',stock:0}]).forEach(v=>addShopVariantRow(v.color,v.size,v.stock));
+  el('shopFormTitle').textContent='Modifier '+p.name;el('shopSaveBtn').textContent='Enregistrer les modifications';el('shopCancelBtn').classList.remove('hidden');
+  el('shopFormStatus').textContent='';el('spName').focus();
+}
+async function uploadShopPhoto(productId){
+  const file=el('spPhoto').files?.[0];if(!file)return el('spPhotoUrl').value.trim()||null;
+  if(!file.type.startsWith('image/'))throw new Error('Choisis un fichier image.');
+  if(file.size>5*1024*1024)throw new Error('La photo doit faire 5 Mo maximum.');
+  const ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
+  const path=`${productId}/${crypto.randomUUID()}.${ext}`;
+  const {error}=await supabaseClient.storage.from('shop-product-photos').upload(path,file,{upsert:true,contentType:file.type});
+  if(error)throw error;
+  return supabaseClient.storage.from('shop-product-photos').getPublicUrl(path).data.publicUrl;
+}
+el('shopProductForm').addEventListener('submit',async e=>{
+  e.preventDefault();if(!currentUser||!currentRole){alert('Connecte-toi pour gérer la boutique.');return}
+  const btn=el('shopSaveBtn');btn.disabled=true;el('shopFormStatus').textContent='Enregistrement…';
+  try{
+    const variants=[...el('shopVariantRows').querySelectorAll('tr')].map(tr=>({
+      color:tr.querySelector('.sv-color').value.trim(),size:tr.querySelector('.sv-size').value.trim(),stock:Number(tr.querySelector('.sv-stock').value)
+    }));
+    if(!variants.length)throw new Error('Ajoute au moins une combinaison goût / style.');
+    if(variants.some(v=>!v.color||!v.size||!Number.isInteger(v.stock)||v.stock<0))throw new Error('Vérifie les goûts, styles et quantités.');
+    const payload={name:el('spName').value.trim(),description:el('spDescription').value.trim(),price:Number(el('spPrice').value),purchase_cost:Number(el('spCost').value||0),active:el('spActive').checked};
+    if(!payload.name||payload.price<0||payload.purchase_cost<0)throw new Error('Vérifie le nom et les prix.');
+    let id=editingShopProductId;
+    if(id){
+      const {error}=await supabaseClient.from('shop_products').update(payload).eq('id',id);if(error)throw error;
+    }else{
+      const {data,error}=await supabaseClient.from('shop_products').insert(payload).select('id').single();if(error)throw error;id=data.id;
+    }
+    const photo=await uploadShopPhoto(id);
+    if(photo){const {error}=await supabaseClient.from('shop_products').update({photo_url:photo}).eq('id',id);if(error)throw error}
+    if(editingShopProductId){const {error}=await supabaseClient.from('shop_variants').delete().eq('product_id',id);if(error)throw error}
+    const {error:variantError}=await supabaseClient.from('shop_variants').insert(variants.map(v=>({...v,product_id:id,active:true})));
+    if(variantError)throw variantError;
+    resetShopForm();await loadShopData();el('shopFormStatus').textContent='Article enregistré.';
+  }catch(err){el('shopFormStatus').textContent='Erreur : '+(err.message||String(err));}
+  finally{btn.disabled=false}
+});
+async function deleteShopProduct(id){
+  if(!confirm('Supprimer cet article et ses variantes ?'))return;
+  const {error}=await supabaseClient.from('shop_products').delete().eq('id',id);
+  if(error){alert('Suppression impossible : '+error.message);return}
+  await loadShopData();
+}
+async function changeShopOrderStatus(id,status){
+  const labels={pending:'En attente',accepted:'Acceptée',preparing:'En préparation',ready:'Prête',delivered:'Livrée',refused:'Refusée'};
+  if(!confirm(`Changer le statut de la commande en « ${labels[status]} » ?`)){renderShop();return}
+  const {error}=await supabaseClient.rpc('mda_update_shop_order_status',{p_order_id:id,p_status:status});
+  if(error){alert('Mise à jour impossible : '+error.message);await loadShopData();return}
+  await loadShopData();
+}
+async function finishShopOrder(id){
+  const order=shopOrders.find(o=>o.id===id);if(!order)return;
+  if(order.status==='refused')return alert('Une commande refusée ne peut pas être terminée.');
+  const existing=Array.isArray(db.sales)?db.sales.find(s=>s.shopOrderId===id):null;
+  if(existing){alert('Cette commande est déjà enregistrée dans la comptabilité.');return}
+  const method=prompt('Mode de paiement : Espèces, Carte, Virement ou Autre','Espèces');
+  if(method===null)return;
+  const allowed=['Espèces','Carte','Virement','Autre'];
+  const paymentMethod=allowed.find(x=>x.toLowerCase()===method.trim().toLowerCase());
+  if(!paymentMethod)return alert('Mode de paiement invalide. Choisis : Espèces, Carte, Virement ou Autre.');
+  if(!confirm(`Terminer la commande de ${order.customer_name||'ce client'} pour ${money(order.total)} ?\n\nElle sera marquée comme livrée et payée, puis une vente sera ajoutée à la comptabilité.`))return;
+  const btns=[...document.querySelectorAll(`button[onclick=\"finishShopOrder('${id}')\"]`)];btns.forEach(b=>{b.disabled=true;b.textContent='Enregistrement…'});
+  try{
+    const {error}=await supabaseClient.rpc('mda_update_shop_order_status',{p_order_id:id,p_status:'delivered'});
+    if(error)throw error;
+    const items=Array.isArray(order.items)?order.items:[];
+    const cost=items.reduce((sum,item)=>{
+      const variant=shopVariants.find(v=>v.id===item.variant_id);
+      const productRow=variant&&shopProducts.find(p=>p.id===variant.product_id);
+      return sum+(Number(productRow?.purchase_cost)||0)*(Number(item.quantity)||0);
+    },0);
+    const quantity=items.reduce((sum,item)=>sum+(Number(item.quantity)||0),0);
+    const names=items.map(item=>{
+      const variant=shopVariants.find(v=>v.id===item.variant_id);
+      const productRow=variant&&shopProducts.find(p=>p.id===variant.product_id);
+      return `${productRow?.name||'Article'}${variant?' · '+variant.color+' / '+variant.size:''} × ${Number(item.quantity)||0}`;
+    }).join(', ');
+    const saleDate=new Date().toISOString();
+    db.sales.push({id:crypto.randomUUID(),shopOrderId:id,date:saleDate,productId:null,name:'Commande boutique — '+(order.customer_name||'Client'),qty:quantity||1,price:Number(order.total)||0,total:Number(order.total)||0,paid:true,paidDate:saleDate,method:paymentMethod,client:order.customer_name||'',note:names,cost});
+    db.moves.push({date:saleDate,type:'Vente boutique',detail:`Commande ${id} · ${order.customer_name||'Client'} · ${names}`,amount:Number(order.total)||0});
+    save();
+    alert('Commande terminée : elle est marquée comme payée et la vente a été ajoutée à la comptabilité.');
+    await loadShopData();
+  }catch(err){
+    alert('La commande n’a pas pu être entièrement comptabilisée : '+(err.message||String(err))+'. Vérifie le statut de la commande avant de réessayer.');
+    await loadShopData();
+  }finally{btns.forEach(b=>{b.disabled=false;b.textContent='Terminer la commande'})}
+}
+
+addShopVariantRow('Noir','M',0);
+render();
+</script></body></html>
